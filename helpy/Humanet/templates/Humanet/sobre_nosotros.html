@@ -1,0 +1,58 @@
+{% extends 'Humanet/base.html' %}
+
+{% block title %}Inicio{% endblock %}
+{% block page_name %}Bienvenida a Humanet{% endblock %}
+
+{% block extra_nav %}
+  {% if user.is_authenticated %}
+      <a href="{% url 'perfil' %}">Perfil</a>
+    {% else %}
+      <a href="{% url 'login' %}">Únete</a>
+    
+  {% endif %}
+  
+  <a href="/eventos/">Eventos</a>
+  <a href="/objetivos/">Objetivo</a>
+{% endblock %}
+
+{% block content %}
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Helpy - Sobre Nosotros</title>
+    </head>
+    <body>
+        <header>
+            <h1>Sobre Nosotros</h1>
+            
+        </header>
+        
+        <main>
+            <section>
+                <h2>¿Quiénes somos?</h2>
+                <p>Somos un equipo dedicado a proporcionar las mejores soluciones para nuestros usuarios.</p>
+            </section>
+            
+            <section>
+                <h2>Nuestra Misión</h2>
+                <p>Hacer que la tecnología sea accesible para todos, brindando herramientas simples y efectivas.</p>
+            </section>
+            
+            <section>
+                <h2>Nuestro Equipo</h2>
+                <ul>
+                    <li>Desarrolladores apasionados</li>
+                    <li>Diseñadores creativos</li>
+                    <li>Soporte técnico 24/7</li>
+                </ul>
+            </section>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 Helpy. Todos los derechos reservados.</p>
+        </footer>
+    </body>
+    </html>
+{% endblock %}

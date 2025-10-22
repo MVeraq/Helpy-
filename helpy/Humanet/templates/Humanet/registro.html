@@ -1,0 +1,47 @@
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <label for="id_username">Nombre de usuario:</label>
+  {{ form.username }}
+
+  <label for="id_password1">Contraseña:</label>
+  {{ form.password1 }}
+
+  <label for="id_password2">Confirmar contraseña:</label>
+  {{ form.password2 }}
+
+  <label for="id_email">Correo electrónico:</label>
+  {{ form.email }}
+
+  <label for="id_first_name">Nombres:</label>
+  {{ form.first_name }}
+
+  <label for="id_last_name">Apellidos:</label>
+  {{ form.last_name }}
+
+  <label for="id_numero_celular">Número celular:</label>
+  {{ form.numero_celular }}
+
+  <label for="id_biografia">Biografía:</label>
+  {{ form.biografia }}
+
+  <label for="id_foto">Foto de perfil:</label>
+  {{ form.foto }}
+
+  <button type="submit">Registrarse</button>
+</form>
+
+{% if form.errors %}
+  <ul>
+    {% for field in form %}
+      {% for error in field.errors %}
+        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+      {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+      <li><strong>Error:</strong> {{ error }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<p>¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a></p>

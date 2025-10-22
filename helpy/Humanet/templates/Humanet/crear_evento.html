@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Evento - Helpy</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        
+        header {
+            background: #333;
+            color: #fff;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            margin-bottom: 10px;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        nav a:hover {
+            text-decoration: underline;
+        }
+        
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        textarea {
+            resize: vertical;
+        }
+        
+        #map {
+            height: 400px;
+            width: 100%;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .map-instructions {
+            background: #e8f4f8;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        button[type="submit"] {
+            background: #28a745;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        
+        button[type="submit"]:hover {
+            background: #218838;
+        }
+        
+        .error-list {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .error-list ul {
+            list-style: none;
+        }
+        
+        .error-list li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Crear Evento de Ayuda Comunitaria</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="{% url 'lista_eventos' %}">Ver Eventos</a></li>
+                <li><a href="{% url 'perfil' %}">Mi Perfil</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <h2>🌟 Organiza un evento de ayuda social</h2>
+        
+        {% if form.errors %}
+        <div class="error-list">
+            <strong>Por favor corrige los siguientes errores:</strong>
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <form method="post" id="eventoForm">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
+                {{ form.nombre }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.fecha.id_for_label }}">{{ form.fecha.label }}</label>
+                {{ form.fecha }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.hora.id_for_label }}">{{ form.hora.label }}</label>
+                {{ form.hora }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.ubicacion.id_for_label }}">{{ form.ubicacion.label }}</label>
+                {{ form.ubicacion }}
+                <div class="map-instructions">
+                    💡 <strong>Tip:</strong> Haz clic en el mapa para seleccionar la ubicación exacta del evento
+                </div>
+                <div id="map"></div>
+                {{ form.latitud }}
+                {{ form.longitud }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.descripcion.id_for_label }}">{{ form.descripcion.label }}</label>
+                {{ form.descripcion }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.detalles.id_for_label }}">{{ form.detalles.label }}</label>
+                {{ form.detalles }}
+            </div>
+            
+<div class="form-group" style="background: #e8f4f8; padding: 15px; border-radius: 4px;">
+    <strong>📝 Nota:</strong> Este evento será creado por <strong>{{ user.username }}</strong>
+</div>
+
+<button type="submit">✅ Crear Evento</button>
+            
+            <button type="submit">✅ Crear Evento</button>
+        </form>
+    </main>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Inicializar el mapa centrado en Villa Alemana, Chile
+        var map = L.map('map').setView([-33.0944, -71.3736], 13);
+        
+        // Agregar capa de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        var marker;
+        
+        // Evento de clic en el mapa
+        map.on('click', function(e) {
+            // Remover marcador anterior si existe
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            
+            // Agregar nuevo marcador
+            marker = L.marker(e.latlng).addTo(map);
+            
+            // Actualizar campos ocultos con coordenadas
+            document.getElementById('id_latitud').value = e.latlng.lat.toFixed(6);
+            document.getElementById('id_longitud').value = e.latlng.lng.toFixed(6);
+            
+            // Opcional: Obtener dirección mediante reverse geocoding
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.display_name) {
+                        document.getElementById('id_ubicacion').value = data.display_name;
+                    }
+                });
+        });
+        
+        // Validación de fecha (no permitir fechas pasadas)
+        document.getElementById('id_fecha').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos - Helpy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        
+        header {
+            background: #333;
+            color: #fff;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            margin-bottom: 10px;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        nav a:hover {
+            text-decoration: underline;
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .crear-btn {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+        
+        .crear-btn:hover {
+            background: #218838;
+        }
+        
+        .login-message {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+        
+        .login-message a {
+            color: #007bff;
+            font-weight: bold;
+        }
+        
+        .eventos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .evento-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .evento-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .evento-info {
+            margin: 10px 0;
+            color: #666;
+        }
+        
+        .evento-info strong {
+            color: #333;
+        }
+        
+        .ver-mas {
+            display: inline-block;
+            margin-top: 15px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        .ver-mas:hover {
+            text-decoration: underline;
+        }
+        
+        .no-eventos {
+            text-align: center;
+            padding: 50px;
+            background: white;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Eventos de Ayuda Comunitaria</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'perfil' %}">Mi Perfil</a></li>
+                    <li><a href="{% url 'logout' %}">Cerrar Sesión</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
+                    <li><a href="{% url 'registro' %}">Registrarse</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        {% if user.is_authenticated %}
+            <a href="{% url 'crear_evento' %}" class="crear-btn">+ Crear Nuevo Evento</a>
+        {% else %}
+            <div class="login-message">
+                💡 <strong>¿Quieres organizar un evento?</strong> 
+                <a href="{% url 'login' %}">Inicia sesión</a> o 
+                <a href="{% url 'registro' %}">regístrate</a> para crear eventos de ayuda comunitaria.
+            </div>
+        {% endif %}
+        
+        {% if eventos %}
+        <div class="eventos-grid">
+            {% for evento in eventos %}
+            <div class="evento-card">
+                <h3>{{ evento.nombre }}</h3>
+                <div class="evento-info">
+                    <strong>📅 Fecha:</strong> {{ evento.fecha|date:"d/m/Y" }}
+                </div>
+                <div class="evento-info">
+                    <strong>🕐 Hora:</strong> {{ evento.hora|time:"H:i" }}
+                </div>
+                <div class="evento-info">
+                    <strong>📍 Lugar:</strong> {{ evento.ubicacion|truncatewords:10 }}
+                </div>
+               <div class="evento-info">
+                    <strong>👤 Creado por:</strong> 
+                    <a href="{% url 'perfil_publico' evento.creador.username %}" style="color: #007bff;">
+                        {{ evento.creador.username }}
+                    </a>
+                </div>
+                <div class="evento-info">
+                    {{ evento.descripcion|truncatewords:20 }}
+                </div>
+                <a href="{% url 'detalle_evento' evento.id %}" class="ver-mas">Ver más detalles →</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-eventos">
+            <h2>No hay eventos aún</h2>
+            <p>Sé el primero en crear un evento de ayuda comunitaria</p>
+            {% if not user.is_authenticated %}
+                <p><a href="{% url 'registro' %}">Regístrate aquí</a></p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </main>
+</body>
+</html>
