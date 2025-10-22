@@ -175,7 +175,13 @@
             
             <h2>{{ usuario_perfil.get_full_name|default:usuario_perfil.username }}</h2>
             <p style="color: #666; font-size: 18px;">@{{ usuario_perfil.username }}</p>
-            
+            <p style="color: #28a745; font-weight: bold; font-size: 16px; margin-top: 10px;">
+                {% if perfil.tipo_cuenta == 'organizacion' %}
+                    🏢 Organización
+                {% else %}
+                    👤 Individuo
+                {% endif %}
+            </p>            
             {% if perfil.biografia %}
             <div class="perfil-info">
                 <strong>📝 Biografía:</strong>

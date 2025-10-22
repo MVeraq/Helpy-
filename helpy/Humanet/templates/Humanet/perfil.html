@@ -13,12 +13,20 @@
 
 {% block content %}
   <h2>Bienvenido, {{ user.username }}</h2>
+  {% if perfil.foto %}
+    <img src="{{ perfil.foto.url }}" alt="Foto de perfil" style="width:150px; height:auto;">
   <p>Nombre: {{ user.first_name }} {{ user.last_name }}</p>
+  <p>Tipo de cuenta: 
+    {% if perfil.tipo_cuenta == 'organizacion' %}
+        🏢 Organización
+    {% else %}
+        👤 Individuo
+    {% endif %}
+  </p>
   <p>Correo: {{ user.email }}</p>
   <p>Número celular: {{ perfil.numero_celular }}</p>
   <p>Biografía: {{ perfil.biografia }}</p>
-  {% if perfil.foto %}
-    <img src="{{ perfil.foto.url }}" alt="Foto de perfil">
+  
   {% endif %}
 
   <form method="post" action="{% url 'logout' %}">

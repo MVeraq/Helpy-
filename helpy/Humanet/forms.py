@@ -14,15 +14,24 @@ class RegistroForm(UserCreationForm):
     password2 = forms.CharField(label='Confirmar contraseña', widget=forms.PasswordInput, help_text=_("Ingrese la misma contraseña para verificación."))
 
     numero_celular = forms.CharField(label='Número celular', max_length=9)
-    biografia = forms.CharField(label='Biografía', widget=forms.Textarea(attrs={'rows': 3, 'cols': 40}), required=True)
+    biografia = forms.CharField(label='Biografía', widget=forms.Textarea(attrs={'rows': 4, 'placeholder': 'Cuéntanos un poco sobre ti o tu organización...'}), required=True)
     foto = forms.ImageField(label='Foto de perfil', required=False) 
+    tipo_cuenta = forms.ChoiceField(choices=[('individuo', 'Soy un individuo'), ('organizacion', 'Represento una organización')],
+        widget=forms.RadioSelect,
+        label='Tipo de cuenta',
+        initial='individuo'    )
+
+
+
+
+
+
+
 
     class Meta:
         model = User
-        fields = ['email','first_name', 'last_name','username', 'password1', 'password2']
-        widgets = {
-        'email': forms.EmailInput(attrs={'autocomplete': 'email'})
-    }
+        fields = ['email','first_name', 'last_name','username', 'password1', 'password2', 'tipo_cuenta']
+        widgets = {'email': forms.EmailInput(attrs={'autocomplete': 'email'}) }
 
     def clean_email(self):
         email = self.cleaned_data.get('email')

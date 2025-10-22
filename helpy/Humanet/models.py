@@ -2,10 +2,17 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class PerfilUsuario(models.Model):
+    TIPO_CUENTA = [
+        ('individuo', 'Individuo'),
+        ('organizacion', 'Organización'),
+    ]
+
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     numero_celular = models.CharField(max_length=15, blank=True, null=True)
     biografia = models.TextField(blank=True, null=True)
     foto = models.ImageField(upload_to='perfiles/', blank=True, null=True)
+    
+    tipo_cuenta = models.CharField(max_length=20, choices=TIPO_CUENTA, default='individuo')
 
     def __str__(self):
         return f"Perfil de {self.usuario.username}"

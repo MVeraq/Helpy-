@@ -3,6 +3,7 @@ from .forms import RegistroForm, EventoForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from .models import PerfilUsuario, Evento
+from django.shortcuts import get_object_or_404
 
 def inicio(request):
     return render(request, 'Humanet/inicio.html')
@@ -12,11 +13,22 @@ def sobre_nosotros(request):
 
 def registro(request):
     if request.method == 'POST':
-        form = RegistroForm(request.POST)
+        form = RegistroForm(request.POST, request.FILES)
         if form.is_valid():
             usuario = form.save()
-            PerfilUsuario.objects.create(usuario=usuario) 
+
+            
+            tipo_cuenta = form.cleaned_data.get('tipo_cuenta')
+            numero_celular = form.cleaned_data.get('numero_celular')
+            biografia = form.cleaned_data.get('biografia')
+            foto = form.cleaned_data.get('foto')
+
+
+            PerfilUsuario.objects.create(usuario=usuario, tipo_cuenta=tipo_cuenta, numero_celular=numero_celular, biografia=biografia, foto=foto) 
             login(request, usuario)
+
+            tipo_cuenta = form.cleaned_data.get('tipo_cuenta')
+
             return redirect('login')
             
     else:
