@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import RegistroForm, EventoForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
-from .models import PerfilUsuario, Evento
+from .models import PerfilUsuario, Evento, User
 from django.shortcuts import get_object_or_404
 
 def inicio(request):
