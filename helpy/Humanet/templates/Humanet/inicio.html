@@ -428,37 +428,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 {% endblock %}
 
-
-<script>
-async function sendMessage() {
-  const input = document.getElementById('userInput');
-  const chatBox = document.getElementById('chatBox');
-  const text = input.value.trim();
-  if (!text) return;
-
-  const userMsg = document.createElement('div');
-  userMsg.classList.add('message','user');
-  userMsg.textContent = text;
-  chatBox.appendChild(userMsg);
-  input.value = '';
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  const res = await fetch("/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: text })
-  });
-  const data = await res.json();
-
-  const botMsg = document.createElement('div');
-  botMsg.classList.add('message','bot');
-
-  if (data.categorias && data.categorias.length > 0) {
-    botMsg.innerHTML = `✨ Según tu preferencia, te sugiero:<br><div class="options">${data.categorias.map(cat => `<button onclick="alert('Seleccionaste ${cat}')">${cat}</button>`).join('')}</div>`;
-  } else {
-    botMsg.textContent = "🤔 No encontré categorías relevantes. Prueba describiendo tu preferencia con más detalle.";
-  }
-  chatBox.appendChild(botMsg);
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-</script>
