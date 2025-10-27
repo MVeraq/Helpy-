@@ -30,7 +30,7 @@ class Evento(models.Model):
     longitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     descripcion = models.TextField()
     detalles = models.TextField(blank=True, null=True)
-   
+    imagen = models.ImageField(upload_to='eventos/', blank=True, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     
     class Meta:

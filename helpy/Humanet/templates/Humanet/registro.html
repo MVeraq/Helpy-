@@ -12,18 +12,21 @@
         }
         
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            background-color: #f4f4f4;
+            background: linear-gradient(135deg, #2c5f5f 0%, #a8e6cf 100%);
             padding: 20px;
+            min-height: 100vh;
         }
         
         header {
-            background: #333;
+            background: #2c5f5f;
             color: #fff;
             padding: 20px;
             margin-bottom: 30px;
             text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(44, 95, 95, 0.3);
         }
         
         main {
@@ -31,14 +34,15 @@
             margin: 0 auto;
             background: white;
             padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(44, 95, 95, 0.2);
         }
         
         h2 {
-            color: #333;
+            color: #2c5f5f;
             margin-bottom: 30px;
             text-align: center;
+            font-size: 2rem;
         }
         
         .form-group {
@@ -49,7 +53,7 @@
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
-            color: #555;
+            color: #2c5f5f;
         }
         
         input[type="text"],
@@ -59,9 +63,19 @@
         textarea {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            border: 2px solid #a8e6cf;
+            border-radius: 8px;
             font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="file"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2c5f5f;
         }
         
         textarea {
@@ -69,24 +83,20 @@
             font-family: Arial, sans-serif;
         }
         
-        input:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #28a745;
-        }
         
         .tipo-cuenta-group {
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #a8e6cf 0%, #d4f1e8 100%);
             padding: 20px;
-            border-radius: 4px;
+            border-radius: 10px;
             margin-bottom: 25px;
+            border-left: 4px solid #2c5f5f;
         }
         
         .tipo-cuenta-group > label {
             font-weight: bold;
             margin-bottom: 15px;
             display: block;
-            color: #333;
+            color: #2c5f5f;
         }
         
         .radio-options {
@@ -100,14 +110,14 @@
             align-items: center;
             padding: 15px;
             background: white;
-            border: 2px solid #ddd;
-            border-radius: 4px;
+            border: 2px solid #a8e6cf;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
         }
         
         .radio-option:hover {
-            border-color: #28a745;
+            border-color: #2c5f5f;
             background: #f0f8f4;
         }
         
@@ -126,19 +136,22 @@
         
         button[type="submit"] {
             width: 100%;
-            background: #28a745;
+            background: #2c5f5f;
             color: white;
             padding: 15px;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(44, 95, 95, 0.3);
         }
         
         button[type="submit"]:hover {
-            background: #218838;
+            background: #1e4a4a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 95, 95, 0.4);
         }
         
         .error-list {
@@ -160,12 +173,13 @@
         .login-link {
             text-align: center;
             margin-top: 20px;
-            color: #666;
+            color: #2c5f5f;
         }
         
         .login-link a {
-            color: #007bff;
+            color: #2c5f5f;
             text-decoration: none;
+            font-weight: bold;
         }
         
         .login-link a:hover {
@@ -174,20 +188,20 @@
         
         .help-text {
             font-size: 12px;
-            color: #666;
+            color: #2c5f5f;
             margin-top: 5px;
         }
         
         .section-title {
-            background: #e8f4f8;
+            background: linear-gradient(135deg, #a8e6cf 0%, #d4f1e8 100%);
             padding: 12px 20px;
             margin: 30px -40px 20px -40px;
             font-weight: bold;
-            color: #0056b3;
+            color: #2c5f5f;
         }
         
         .optional-label {
-            color: #999;
+            color: #2c5f5f;
             font-weight: normal;
             font-size: 12px;
         }

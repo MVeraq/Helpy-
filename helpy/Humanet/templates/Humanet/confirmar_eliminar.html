@@ -1,0 +1,249 @@
+{% extends 'Humanet/base.html' %}
+{% block title %}Confirmar Eliminación - Helpy{% endblock %}
+
+{% block content %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .confirm-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+            text-align: center;
+            position: relative;
+            animation: showUp 0.25s ease-out;
+        }
+
+        @keyframes showUp {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .warning-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .event-name {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 16px;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8d7da;
+            border-radius: 8px;
+        }
+
+        .warning-text {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .event-details {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0 15px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .event-details p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .password-section {
+            background: #fff3cd;
+            border: 1.5px solid #ffc107;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .password-section h3 {
+            color: #856404;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .password-input-group {
+            position: relative;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 8px 35px 8px 10px;
+            border: 1.5px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #ffc107;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            font-size: 13px;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-overlay" id="modalEliminar">
+        <div class="confirm-card">
+            <button class="close-modal" onclick="cerrarModal()">✖</button>
+            <div class="warning-icon">⚠️</div>
+
+            <h2>¿Estás seguro?</h2>
+            <div class="event-name">{{ evento.nombre }}</div>
+            <p class="warning-text">
+                Esta acción <strong>no se puede deshacer</strong>. El evento será eliminado permanentemente.
+            </p>
+
+            <div class="event-details">
+                <p><strong>📅</strong> {{ evento.fecha|date:"d/m/Y" }}</p>
+                <p><strong>🕐</strong> {{ evento.hora|time:"H:i" }}</p>
+                <p><strong>📍</strong> {{ evento.ubicacion }}</p>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                    <div class="error-message">{{ message }}</div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" id="deleteForm" action="{% url 'eliminar_evento' evento.id %}">
+                {% csrf_token %}
+                <div class="password-section">
+                    <h3>🔐 Ingresa tu contraseña</h3>
+                    <div class="password-input-group">
+                        <input 
+                            type="password" 
+                            name="password" 
+                            id="passwordInput"
+                            class="password-input" 
+                            placeholder="Contraseña"
+                            required
+                        >
+                        <button type="button" class="toggle-password" onclick="togglePassword()">👁️</button>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-cancel" onclick="cerrarModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-delete" id="deleteButton">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const input = document.getElementById('passwordInput');
+            const btn = document.querySelector('.toggle-password');
+            input.type = input.type === 'password' ? 'text' : 'password';
+            btn.textContent = input.type === 'password' ? '👁️' : '🙈';
+        }
+
+        function cerrarModal() {
+            // Redirigir al perfil
+            window.location.href = '{% url "perfil" %}';
+        }
+    </script>
+{% endblock %}

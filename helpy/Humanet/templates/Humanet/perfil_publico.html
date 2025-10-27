@@ -205,7 +205,7 @@
         </div>
         
         <div class="eventos-section">
-            <h3>🎯 Eventos creados por {{ usuario_perfil.username }}</h3>
+            <h3> Eventos creados por {{ usuario_perfil.username }}</h3>
             
             {% if eventos_creados %}
             <div class="eventos-grid">
@@ -224,6 +224,29 @@
                 <p>Este usuario aún no ha creado ningún evento.</p>
             </div>
             {% endif %}
+            
+        <div class="eventos-section">
+            <h3> Inscripciones de {{ usuario_perfil.username }}</h3>
+            
+            {% if eventos_inscritos %}
+            <div class="eventos-grid">
+                {% for evento in eventos_inscritos %}
+                <div class="evento-card">
+                    <h4>{{ evento.nombre }}</h4>
+                    <p><strong>📅</strong> {{ evento.fecha|date:"d/m/Y" }} a las {{ evento.hora|time:"H:i" }}</p>
+                    <p><strong>📍</strong> {{ evento.ubicacion|truncatewords:8 }}</p>
+                    <p>{{ evento.descripcion|truncatewords:15 }}</p>
+                    <a href="{% url 'detalle_evento' evento.id %}">Ver detalles →</a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-eventos">
+                <p>Este usuario aún no se ha inscrito en algún evento.</p>
+            </div>
+            {% endif %}
+
+
         </div>
     </main>
 </body>

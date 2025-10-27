@@ -12,35 +12,34 @@
 {% endblock %}
 
 {% block content %}
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - Helpy</title>
-    </head>
-    <body>
-
+<div style="max-width: 400px; margin: 50px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; margin-bottom: 30px;">Iniciar Sesión</h2>
     
     <form method="post">
-    {% csrf_token %}
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 20px;">
+            <label for="id_username" style="display: block; margin-bottom: 5px; font-weight: bold;">Usuario:</label>
+            {{ form.username }}
+        </div>
 
-    <label for="id_username">Usuario:</label>
-    {{ form.username }}
+        <div style="margin-bottom: 20px;">
+            <label for="id_password" style="display: block; margin-bottom: 5px; font-weight: bold;">Contraseña:</label>
+            {{ form.password }}
+        </div>
 
-    <label for="id_password">Contraseña:</label>
-    {{ form.password }}
-
-    <button type="submit">Iniciar Sesión</button>
+        <button type="submit" style="width: 100%; padding: 12px; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">
+            Iniciar Sesión
+        </button>
     </form>
 
     {% if form.errors %}
-    <p style="color: red;">Usuario o contraseña incorrectos.</p>
+    <p style="color: red; text-align: center; margin-top: 15px;">Usuario o contraseña incorrectos.</p>
     {% endif %}
 
-    <p>¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate aquí</a></p>
-    </main>
-    </body>
-    </html>
+    <p style="text-align: center; margin-top: 20px;">
+        ¿No tienes cuenta? <a href="{% url 'registro' %}" style="color: #667eea;">Regístrate aquí</a>
+    </p>
+</div>
 {% endblock %}
 

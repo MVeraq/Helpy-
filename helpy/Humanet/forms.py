@@ -79,7 +79,7 @@ class EventoForm(forms.ModelForm):
     class Meta:
         model = Evento
         fields = ['nombre', 'fecha', 'hora', 'ubicacion', 'latitud', 'longitud', 
-                  'descripcion', 'detalles']
+                  'descripcion', 'detalles', 'imagen']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Jornada de limpieza comunitaria'}),
             'ubicacion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Plaza principal, Villa Alemana'}),
@@ -87,12 +87,12 @@ class EventoForm(forms.ModelForm):
             'longitud': forms.HiddenInput(),
             'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describe brevemente el evento...'}),
             'detalles': forms.Textarea(attrs={'class': 'form-control', 'rows': 6, 'placeholder': 'Información adicional, materiales necesarios, etc.'}),
-            
+            'imagen': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
         }
         labels = {
             'nombre': 'Nombre del evento',
             'ubicacion': 'Ubicación',
             'descripcion': 'Descripción',
             'detalles': 'Detalles adicionales',
-            
+            'imagen': 'Imagen del evento',
         }

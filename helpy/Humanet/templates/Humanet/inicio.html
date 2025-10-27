@@ -1,33 +1,464 @@
 {% extends 'Humanet/base.html' %}
 
-{% block title %}Inicio{% endblock %}
-{% block page_name %}Bienvenida a Humanet{% endblock %}
-
-{% block extra_nav %}
-  {% if user.is_authenticated %}
-      <a href="{% url 'perfil' %}">Perfil</a>
-    {% else %}
-      <a href="{% url 'login' %}">Únete</a>
-    
-  {% endif %}
-  <a href="{% url 'sobre_nosotros' %}">Sobre nosotros</a>
-  <a href="{% url 'lista_eventos' %}">Eventos</a></li>
-  <a href="/objetivos/">Objetivo</a>
-{% endblock %}
+{% block title %}Inicio - Helpy{% endblock %}
 
 {% block content %}
-  <section>
-    <h2>¿Qué es Helpy?</h2>
-    <p>Esta es tu plataforma de ayuda. Aquí puedes encontrar información y recursos.</p>
-    <li><a href="{% url 'crear_evento' %}">Crea tu evento</a></li>
-  </section>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-  <section>
-    <h2>Características principales</h2>
-    <ul>
-      <li>Fácil de usar</li>
-      <li>Rápido y eficiente</li>
-      <li>Soporte 24/7</li>
-    </ul>
-  </section>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+    }
+
+    /* Header/Navegación */
+    .header {
+        background: #2c5f5f;
+        padding: 15px 0;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        text-transform: uppercase;
+    }
+
+    .logo-icon {
+        font-size: 24px;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+    }
+
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        text-transform: uppercase;
+        transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+        color: #a8e6cf;
+    }
+
+    /* Hero Section */
+    .hero {
+        height: 100vh;
+        background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                    url();
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding-left: 50px;
+        color: white;
+        position: relative;
+    }
+
+    .hero-content {
+        max-width: 600px;
+        z-index: 2;
+    }
+
+    .hero h1 {
+        font-size: 3.5rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 1.3rem;
+        margin-bottom: 30px;
+        opacity: 0.9;
+    }
+
+    .cta-button {
+        display: inline-block;
+        background: #2c5f5f;
+        color: white;
+        padding: 15px 30px;
+        text-decoration: none;
+        border: 2px solid white;
+        border-radius: 5px;
+        font-weight: bold;
+        text-transform: uppercase;
+        transition: all 0.3s;
+        font-size: 16px;
+    }
+
+    .cta-button:hover {
+        background: white;
+        color: #2c5f5f;
+    }
+
+    /* Events Section */
+    .events-section {
+        background: #a8e6cf;
+        padding: 80px 0;
+        min-height: 60vh;
+    }
+
+    .events-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+    }
+
+    .events-title {
+        text-align: center;
+        font-size: 2.5rem;
+        color: #2c5f5f;
+        margin-bottom: 50px;
+        font-weight: bold;
+    }
+
+    .events-carousel {
+        display: flex;
+        gap: 30px;
+        overflow-x: auto;
+        padding: 20px 0;
+        scroll-behavior: smooth;
+    }
+
+    .event-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+        min-width: 350px;
+        transition: transform 0.3s;
+    }
+
+    .event-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .event-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .event-content {
+        padding: 25px;
+    }
+
+    .event-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .event-description {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    .event-date {
+        color: #2c5f5f;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .carousel-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(44, 95, 95, 0.8);
+        color: white;
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 20px;
+        cursor: pointer;
+        transition: background 0.3s;
+        z-index: 10;
+    }
+
+    .carousel-arrow:hover {
+        background: #2c5f5f;
+    }
+
+    .arrow-left {
+        left: 20px;
+    }
+
+    .arrow-right {
+        right: 20px;
+    }
+
+    /* Footer */
+    .footer {
+        background: #2c5f5f;
+        padding: 30px 0;
+        text-align: center;
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .footer h3 {
+        color: white;
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+    .footer-line {
+        width: 100px;
+        height: 2px;
+        background: white;
+        margin: 0 auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero {
+            padding-left: 20px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .nav-links {
+            gap: 15px;
+        }
+        
+        .event-card {
+            min-width: 280px;
+        }
+        
+        .carousel-arrow {
+            display: none;
+        }
+    }
+</style>
+
+<!-- Header -->
+<header class="header">
+    <div class="nav-container">
+        <div class="logo">
+            <span class="logo-icon">c:</span>
+            <span>HELPY</span>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="{% url 'lista_eventos' %}">EVENTOS</a></li>
+                <li><a href="{% url 'sobre_nosotros' %}">OBJETIVOS</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'perfil' %}">PERFIL</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">ÚNETE</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>CONECTA, AYUDA, IMPACTA</h1>
+        <p>Únete a nuestra comunidad y crea eventos que marquen la diferencia en tu comunidad</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'crear_evento' %}" class="cta-button">¡CREA TU EVENTO AQUÍ!</a>
+        {% else %}
+            <a href="{% url 'registro' %}" class="cta-button">¡ÚNETE AHORA!</a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Events Section -->
+<section class="events-section">
+    <div class="events-container">
+        <h2 class="events-title">EVENTOS DESTACADOS</h2>
+        
+        <button class="carousel-arrow arrow-left" onclick="scrollEvents('left')">‹</button>
+        <button class="carousel-arrow arrow-right" onclick="scrollEvents('right')">›</button>
+        
+        <div class="events-carousel" id="eventsCarousel">
+            {% for evento in eventos_destacados %}
+            <div class="event-card">
+                {% if evento.imagen %}
+                    <img src="{{ evento.imagen.url }}" alt="{{ evento.nombre }}" class="event-image">
+                {% else %}
+                    <img src="https://images.unsplash.com/photo-{{ forloop.counter|add:1529156069898 }}?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                         alt="{{ evento.nombre }}" class="event-image">
+                {% endif %}
+                <div class="event-content">
+                    <h3 class="event-title">{{ evento.nombre }}</h3>
+                    <p class="event-description">{{ evento.descripcion|truncatewords:20 }}</p>
+                    <div class="event-date">
+                        📅 {{ evento.fecha|date:"d/m/Y" }} | 🕐 {{ evento.hora|time:"H:i" }}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="event-card">
+                <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                     alt="Evento de ejemplo" class="event-image">
+                <div class="event-content">
+                    <h3 class="event-title">Limpieza Comunitaria</h3>
+                    <p class="event-description">Únete a nosotros para limpiar el parque del barrio y crear un ambiente más saludable para todos.</p>
+                    <div class="event-date">📅 15/03/2024 | 🕐 09:00</div>
+                </div>
+            </div>
+            <div class="event-card">
+                <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                     alt="Evento de ejemplo" class="event-image">
+                <div class="event-content">
+                    <h3 class="event-title">Recolección de Alimentos</h3>
+                    <p class="event-description">Ayuda a recolectar alimentos no perecederos para familias necesitadas de nuestra comunidad.</p>
+                    <div class="event-date">📅 22/03/2024 | 🕐 14:00</div>
+                </div>
+            </div>
+            <div class="event-card">
+                <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                     alt="Evento de ejemplo" class="event-image">
+                <div class="event-content">
+                    <h3 class="event-title">Tutoría Estudiantil</h3>
+                    <p class="event-description">Ofrece tu tiempo para ayudar a estudiantes con sus tareas y estudios.</p>
+                    <div class="event-date">📅 29/03/2024 | 🕐 16:00</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<div class="chat-container">
+  <div class="chat-box" id="chatBox">
+    <div class="message bot">👋 ¡Hola! Cuéntame qué tipo de eventos te interesan.</div>
+  </div>
+  <div class="input-area">
+    <input id="userInput" type="text" placeholder="Escribe tus preferencias...">
+    <button onclick="sendMessage()">Enviar</button>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <h3>Contacto</h3>
+        <div class="footer-line"></div>
+    </div>
+</footer>
+
+<script>
+function scrollEvents(direction) {
+    const carousel = document.getElementById('eventsCarousel');
+    const scrollAmount = 400;
+    
+    if (direction === 'left') {
+        carousel.scrollBy({
+            left: -scrollAmount,
+            behavior: 'smooth'
+        });
+    } else {
+        carousel.scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+}
+
+// Auto-scroll del carrusel
+let autoScrollInterval;
+function startAutoScroll() {
+    autoScrollInterval = setInterval(() => {
+        const carousel = document.getElementById('eventsCarousel');
+        carousel.scrollBy({
+            left: 400,
+            behavior: 'smooth'
+        });
+    }, 5000);
+}
+
+function stopAutoScroll() {
+    clearInterval(autoScrollInterval);
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    startAutoScroll();
+    
+    const carousel = document.getElementById('eventsCarousel');
+    carousel.addEventListener('mouseenter', stopAutoScroll);
+    carousel.addEventListener('mouseleave', startAutoScroll);
+});
+</script>
+
 {% endblock %}
+
+
+<script>
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const chatBox = document.getElementById('chatBox');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const userMsg = document.createElement('div');
+  userMsg.classList.add('message','user');
+  userMsg.textContent = text;
+  chatBox.appendChild(userMsg);
+  input.value = '';
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  const res = await fetch("/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: text })
+  });
+  const data = await res.json();
+
+  const botMsg = document.createElement('div');
+  botMsg.classList.add('message','bot');
+
+  if (data.categorias && data.categorias.length > 0) {
+    botMsg.innerHTML = `✨ Según tu preferencia, te sugiero:<br><div class="options">${data.categorias.map(cat => `<button onclick="alert('Seleccionaste ${cat}')">${cat}</button>`).join('')}</div>`;
+  } else {
+    botMsg.textContent = "🤔 No encontré categorías relevantes. Prueba describiendo tu preferencia con más detalle.";
+  }
+  chatBox.appendChild(botMsg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>

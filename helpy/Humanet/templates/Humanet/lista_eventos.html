@@ -12,17 +12,20 @@
         }
         
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             padding: 20px;
-            background-color: #f4f4f4;
+            background: linear-gradient(135deg, #a8e6cf 0%, #f0f8f5 100%);
+            min-height: 100vh;
         }
         
         header {
-            background: #333;
+            background: #2c5f5f;
             color: #fff;
             padding: 20px;
             margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(44, 95, 95, 0.3);
         }
         
         header h1 {
@@ -41,7 +44,8 @@
         }
         
         nav a:hover {
-            text-decoration: underline;
+            color: #a8e6cf;
+            text-decoration: none;
         }
         
         main {
@@ -51,29 +55,41 @@
         
         .crear-btn {
             display: inline-block;
-            background: #28a745;
+            background: #2c5f5f;
             color: white;
-            padding: 12px 25px;
+            padding: 15px 30px;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 8px;
             margin-bottom: 30px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(44, 95, 95, 0.3);
         }
         
         .crear-btn:hover {
-            background: #218838;
+            background: #1e4a4a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 95, 95, 0.4);
         }
         
         .login-message {
-            background: #fff3cd;
-            color: #856404;
-            padding: 15px;
-            border-radius: 4px;
+            background: linear-gradient(135deg, #a8e6cf 0%, #d4f1e8 100%);
+            color: #2c5f5f;
+            padding: 20px;
+            border-radius: 10px;
             margin-bottom: 30px;
+            border-left: 4px solid #2c5f5f;
+            box-shadow: 0 4px 15px rgba(44, 95, 95, 0.2);
         }
         
         .login-message a {
-            color: #007bff;
+            color: #2c5f5f;
             font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .login-message a:hover {
+            text-decoration: underline;
         }
         
         .eventos-grid {
@@ -84,41 +100,80 @@
         
         .evento-card {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(44, 95, 95, 0.15);
+            transition: all 0.3s;
+            border-left: 4px solid #2c5f5f;
+        }
+        
+        .evento-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(44, 95, 95, 0.25);
         }
         
         .evento-card h3 {
-            color: #333;
-            margin-bottom: 10px;
+            color: #2c5f5f;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
         }
         
         .evento-info {
-            margin: 10px 0;
+            margin: 12px 0;
             color: #666;
         }
         
         .evento-info strong {
-            color: #333;
+            color: #2c5f5f;
         }
         
         .ver-mas {
             display: inline-block;
-            margin-top: 15px;
-            color: #007bff;
+            margin-top: 20px;
+            color: #2c5f5f;
             text-decoration: none;
+            font-weight: bold;
+            padding: 8px 16px;
+            background: #a8e6cf;
+            border-radius: 20px;
+            transition: all 0.3s;
         }
         
         .ver-mas:hover {
-            text-decoration: underline;
+            background: #2c5f5f;
+            color: white;
+            transform: translateX(5px);
         }
         
         .no-eventos {
             text-align: center;
-            padding: 50px;
+            padding: 60px;
             background: white;
-            border-radius: 8px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(44, 95, 95, 0.15);
+            color: #2c5f5f;
+        }
+        
+        .no-eventos h2 {
+            color: #2c5f5f;
+            margin-bottom: 15px;
+        }
+        
+        .no-eventos a {
+            color: #2c5f5f;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            background: #a8e6cf;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        
+        .no-eventos a:hover {
+            background: #2c5f5f;
+            color: white;
         }
     </style>
 </head>
@@ -166,8 +221,8 @@
                 </div>
                <div class="evento-info">
                     <strong>👤 Creado por:</strong> 
-                    <a href="{% url 'perfil_publico' evento.creador.username %}" style="color: #007bff;">
-                        {{ evento.creador.username }}
+                    <a href="{% url 'perfil_publico' evento.creador.username %}" style="color: #2c5f5f; text-decoration: none;">
+                        {{ evento.creador }}
                     </a>
                 </div>
                 <div class="evento-info">
