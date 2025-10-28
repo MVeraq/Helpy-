@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro - Helpy</title>
+    
     <style>
         * {
             margin: 0;
@@ -205,6 +206,14 @@
             font-weight: normal;
             font-size: 12px;
         }
+
+        .hidden {
+            display: none;
+        }
+        .radio-option.selected {
+            border-color: #2c5f5f;
+            background: #f0f8f4;
+        }
     </style>
 </head>
 <body>
@@ -232,88 +241,88 @@
         </div>
         {% endif %}
         
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" id="registroForm">
             {% csrf_token %}
             
             <!-- Tipo de cuenta -->
             <div class="tipo-cuenta-group">
-                <label>{{ form.tipo_cuenta.label }}</label>
+                <label>Tipo de cuenta</label>
                 <div class="radio-options">
-                    {% for value, text in form.tipo_cuenta.field.choices %}
-                    <div class="radio-option">
-                        <input type="radio" 
-                               name="{{ form.tipo_cuenta.name }}" 
-                               value="{{ value }}" 
-                               id="id_tipo_{{ value }}"
-                               {% if forloop.first %}checked{% endif %}>
-                        <label for="id_tipo_{{ value }}">
-                            {% if value == 'individuo' %}👤{% else %}🏢{% endif %} {{ text }}
-                        </label>
+                    <div class="radio-option" onclick="selectTipoCuenta('individuo')">
+                        <input type="radio" name="tipo_cuenta" value="individuo" id="tipo_individuo" checked>
+                        <label for="tipo_individuo">👤 Soy un individuo</label>
                     </div>
-                    {% endfor %}
+                    <div class="radio-option" onclick="selectTipoCuenta('organizacion')">
+                        <input type="radio" name="tipo_cuenta" value="organizacion" id="tipo_organizacion">
+                        <label for="tipo_organizacion">🏢 Represento una organización</label>
+                    </div>
                 </div>
             </div>
             
             <div class="section-title">📋 Información básica</div>
             
             <div class="form-group">
-                <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
-                {{ form.email }}
+                <label for="id_email">Correo electrónico</label>
+                <input type="email" name="email" id="id_email" required>
                 <div class="help-text">Usaremos tu email para notificaciones importantes</div>
             </div>
             
-            <div class="form-group">
-                <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
-                {{ form.first_name }}
+            <!-- Campos para INDIVIDUO -->
+            <div id="campos-individuo">
+                <div class="form-group">
+                    <label for="id_first_name">Nombres</label>
+                    <input type="text" name="first_name" id="id_first_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_last_name">Apellidos</label>
+                    <input type="text" name="last_name" id="id_last_name" required>
+                </div>
+            </div>
+            
+            <!-- Campos para ORGANIZACIÓN -->
+            <div id="campos-organizacion" class="hidden">
+                <div class="form-group">
+                    <label for="id_nombre_organizacion">Nombre de la Organización</label>
+                    <input type="text" name="nombre_organizacion" id="id_nombre_organizacion" placeholder="Ej: Fundación Ayuda Comunitaria">
+                    <div class="help-text">Este será el nombre público de tu organización</div>
+                </div>
             </div>
             
             <div class="form-group">
-                <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
-                {{ form.last_name }}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
-                {{ form.username }}
+                <label for="id_username">Nombre de usuario</label>
+                <input type="text" name="username" id="id_username" required>
                 <div class="help-text">Mínimo 5 caracteres, sin espacios</div>
             </div>
             
             <div class="section-title">🔒 Seguridad</div>
             
             <div class="form-group">
-                <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
-                {{ form.password1 }}
+                <label for="id_password1">Contraseña</label>
+                <input type="password" name="password1" id="id_password1" required>
             </div>
             
             <div class="form-group">
-                <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
-                {{ form.password2 }}
+                <label for="id_password2">Confirmar contraseña</label>
+                <input type="password" name="password2" id="id_password2" required>
             </div>
             
             <div class="section-title">📝 Información adicional <span class="optional-label">(opcional)</span></div>
             
             <div class="form-group">
-                <label for="{{ form.numero_celular.id_for_label }}">
-                    {{ form.numero_celular.label }} <span class="optional-label">(opcional)</span>
-                </label>
-                {{ form.numero_celular }}
+                <label for="id_numero_celular">Número de celular <span class="optional-label">(opcional)</span></label>
+                <input type="text" name="numero_celular" id="id_numero_celular" placeholder="+56 9 1234 5678">
             </div>
             
             <div class="form-group">
-                <label for="{{ form.biografia.id_for_label }}">
-                    {{ form.biografia.label }} <span class="optional-label">(opcional)</span>
-                </label>
-                {{ form.biografia }}
+                <label for="id_biografia">Biografía <span class="optional-label">(opcional)</span></label>
+                <textarea name="biografia" id="id_biografia" rows="4" placeholder="Cuéntanos un poco sobre ti o tu organización..."></textarea>
             </div>
             
             <div class="form-group">
-                <label for="{{ form.foto.id_for_label }}">
-                    {{ form.foto.label }} <span class="optional-label">(opcional)</span>
-                </label>
-                {{ form.foto }}
-                {% if form.foto.help_text %}
-                <div class="help-text">{{ form.foto.help_text }}</div>
-                {% endif %}
+                <label for="id_foto">Foto de perfil <span class="optional-label">(opcional)</span></label>
+                <input type="file" name="foto" id="id_foto" accept="image/*">
+                <div class="help-text">Formato: JPG, PNG. Tamaño máximo: 5MB</div>
             </div>
             
             <button type="submit">✅ Crear Cuenta</button>
@@ -323,5 +332,42 @@
             ¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a>
         </div>
     </main>
+
+    <script>
+        function selectTipoCuenta(tipo) {
+            const individuoRadio = document.getElementById('tipo_individuo');
+            const organizacionRadio = document.getElementById('tipo_organizacion');
+            const camposIndividuo = document.getElementById('campos-individuo');
+            const camposOrganizacion = document.getElementById('campos-organizacion');
+            
+            if (tipo === 'individuo') {
+                individuoRadio.checked = true;
+                organizacionRadio.checked = false;
+                camposIndividuo.classList.remove('hidden');
+                camposOrganizacion.classList.add('hidden');
+                document.getElementById('id_first_name').required = true;
+                document.getElementById('id_last_name').required = true;
+                document.getElementById('id_nombre_organizacion').required = false;
+                document.getElementById('id_nombre_organizacion').value = '';
+            } else {
+                individuoRadio.checked = false;
+                organizacionRadio.checked = true;
+                camposIndividuo.classList.add('hidden');
+                camposOrganizacion.classList.remove('hidden');
+                document.getElementById('id_first_name').required = false;
+                document.getElementById('id_last_name').required = false;
+                document.getElementById('id_nombre_organizacion').required = true;
+                document.getElementById('id_first_name').value = '';
+                document.getElementById('id_last_name').value = '';
+            }
+
+            document.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.radio-option').classList.add('selected');
+        });
+    </script>
 </body>
 </html>

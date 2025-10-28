@@ -38,27 +38,40 @@ def logout_view(request):
 def registro(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST, request.FILES)
+        
+        # Manejar el tipo de cuenta
+        tipo_cuenta = request.POST.get('tipo_cuenta', 'individuo')
+        
+        if tipo_cuenta == 'organizacion':
+            # Para organización: usar nombre_organizacion como first_name y last_name
+            nombre_org = request.POST.get('nombre_organizacion', '')
+            # Crear una copia mutable de POST
+            post_data = request.POST.copy()
+            post_data['first_name'] = nombre_org
+            post_data['last_name'] = ''  # Dejar apellido vacío para organizaciones
+            form = RegistroForm(post_data, request.FILES)
+        
         if form.is_valid():
             usuario = form.save()
-
             
-            tipo_cuenta = form.cleaned_data.get('tipo_cuenta')
-            numero_celular = form.cleaned_data.get('numero_celular')
-            biografia = form.cleaned_data.get('biografia')
-            foto = form.cleaned_data.get('foto')
-
-
-            PerfilUsuario.objects.create(usuario=usuario, tipo_cuenta=tipo_cuenta, numero_celular=numero_celular, biografia=biografia, foto=foto) 
+            # Crear perfil con todos los datos adicionales
+            numero_celular = request.POST.get('numero_celular', '')
+            biografia = request.POST.get('biografia', '')
+            foto = request.FILES.get('foto')
+            
+            PerfilUsuario.objects.create(
+                usuario=usuario,
+                tipo_cuenta=tipo_cuenta,
+                numero_celular=numero_celular,
+                biografia=biografia,
+                foto=foto
+            )
+            
             login(request, usuario)
-
-            tipo_cuenta = form.cleaned_data.get('tipo_cuenta')
-
-            return redirect('login')
-            
+            return redirect('perfil')
     else:
         form = RegistroForm()
     return render(request, 'Humanet/registro.html', {'form': form})
-
 
 @login_required
 def perfil(request):

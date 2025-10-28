@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Helpy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #2c5f5f 0%, #a8e6cf 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        header {
+            background: #2c5f5f;
+            color: #fff;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(44, 95, 95, 0.3);
+        }
+        
+        main {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(44, 95, 95, 0.2);
+        }
+        
+        h2 {
+            color: #2c5f5f;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c5f5f;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #a8e6cf;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="file"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2c5f5f;
+        }
+        
+        textarea {
+            resize: vertical;
+            font-family: Arial, sans-serif;
+        }
+        
+        
+        .tipo-cuenta-group {
+            background: linear-gradient(135deg, #a8e6cf 0%, #d4f1e8 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #2c5f5f;
+        }
+        
+        .tipo-cuenta-group > label {
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: block;
+            color: #2c5f5f;
+        }
+        
+        .radio-options {
+            display: flex;
+            gap: 15px;
+            flex-direction: column;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border: 2px solid #a8e6cf;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .radio-option:hover {
+            border-color: #2c5f5f;
+            background: #f0f8f4;
+        }
+        
+        .radio-option input[type="radio"] {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .radio-option label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
+        
+        button[type="submit"] {
+            width: 100%;
+            background: #2c5f5f;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(44, 95, 95, 0.3);
+        }
+        
+        button[type="submit"]:hover {
+            background: #1e4a4a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 95, 95, 0.4);
+        }
+        
+        .error-list {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .error-list ul {
+            list-style: none;
+        }
+        
+        .error-list li {
+            margin-bottom: 8px;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #2c5f5f;
+        }
+        
+        .login-link a {
+            color: #2c5f5f;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #2c5f5f;
+            margin-top: 5px;
+        }
+        
+        .section-title {
+            background: linear-gradient(135deg, #a8e6cf 0%, #d4f1e8 100%);
+            padding: 12px 20px;
+            margin: 30px -40px 20px -40px;
+            font-weight: bold;
+            color: #2c5f5f;
+        }
+        
+        .optional-label {
+            color: #2c5f5f;
+            font-weight: normal;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Únete a Helpy</h1>
+        <p>Crea tu cuenta y comienza a participar en eventos de ayuda comunitaria</p>
+    </header>
+    
+    <main>
+        <h2>Registro de Usuario</h2>
+        
+        {% if form.errors %}
+        <div class="error-list">
+            <strong>⚠️ Por favor corrige los siguientes errores:</strong>
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li><strong>Error:</strong> {{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Tipo de cuenta -->
+            <div class="tipo-cuenta-group">
+                <label>{{ form.tipo_cuenta.label }}</label>
+                <div class="radio-options">
+                    {% for value, text in form.tipo_cuenta.field.choices %}
+                    <div class="radio-option">
+                        <input type="radio" 
+                               name="{{ form.tipo_cuenta.name }}" 
+                               value="{{ value }}" 
+                               id="id_tipo_{{ value }}"
+                               {% if forloop.first %}checked{% endif %}>
+                        <label for="id_tipo_{{ value }}">
+                            {% if value == 'individuo' %}👤{% else %}🏢{% endif %} {{ text }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="section-title">📋 Información básica</div>
+            
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                {{ form.email }}
+                <div class="help-text">Usaremos tu email para notificaciones importantes</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                {{ form.first_name }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+                {{ form.last_name }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                {{ form.username }}
+                <div class="help-text">Mínimo 5 caracteres, sin espacios</div>
+            </div>
+            
+            <div class="section-title">🔒 Seguridad</div>
+            
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                {{ form.password1 }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                {{ form.password2 }}
+            </div>
+            
+            <div class="section-title">📝 Información adicional <span class="optional-label">(opcional)</span></div>
+            
+            <div class="form-group">
+                <label for="{{ form.numero_celular.id_for_label }}">
+                    {{ form.numero_celular.label }} <span class="optional-label">(opcional)</span>
+                </label>
+                {{ form.numero_celular }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.biografia.id_for_label }}">
+                    {{ form.biografia.label }} <span class="optional-label">(opcional)</span>
+                </label>
+                {{ form.biografia }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.foto.id_for_label }}">
+                    {{ form.foto.label }} <span class="optional-label">(opcional)</span>
+                </label>
+                {{ form.foto }}
+                {% if form.foto.help_text %}
+                <div class="help-text">{{ form.foto.help_text }}</div>
+                {% endif %}
+            </div>
+            
+            <button type="submit">✅ Crear Cuenta</button>
+        </form>
+        
+        <div class="login-link">
+            ¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a>
+        </div>
+    </main>
+</body>
+</html>

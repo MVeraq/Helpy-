@@ -3,7 +3,11 @@
 {% block title %}Inicio - Helpy{% endblock %}
 {% block content %}
 
-<!-- Mensajes de Django -->
+{% load static %}
+
+
+
+
 {% if messages %}
 <div class="messages-container">
     {% for message in messages %}
@@ -14,7 +18,7 @@
     {% endfor %}
 </div>
 <script>
-    // Auto-ocultar mensajes después de 5 segundos
+
     setTimeout(() => {
         document.querySelectorAll('.message-alert').forEach(msg => {
             msg.style.opacity = '0';
@@ -25,18 +29,30 @@
 </script>
 {% endif %}
 
+
 <style>
+
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+    
+    }
+
+
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
     }
 
-    body {
+    .body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         line-height: 1.6;
+        
     }
 
+    
     /* Header/Navegación */
     .header {
         background: #2c5f5f;
@@ -95,18 +111,25 @@
 
     /* Hero Section */
     .hero {
+        position: relative;
         height: 100vh;
-        background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
-                    url();
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
         display: flex;
         align-items: center;
         justify-content: flex-start;
         padding-left: 50px;
         color: white;
-        position: relative;
+        overflow: hidden;
+    }
+
+    .video-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* ajusta el video sin deformarlo */
+        z-index: -1; /* lo envía al fondo */
+        filter: brightness(0.6); /* oscurece un poco para que se lea el texto */
     }
 
     .hero-content {
@@ -134,7 +157,6 @@
         color: white;
         padding: 15px 30px;
         text-decoration: none;
-        border: 2px solid white;
         border-radius: 5px;
         font-weight: bold;
         text-transform: uppercase;
@@ -249,7 +271,7 @@
 
     /* Footer */
     .footer {
-        background: #2c5f5f;
+        background-color: #2c5f5f;
         padding: 30px 0;
         text-align: center;
     }
@@ -270,7 +292,7 @@
     .footer-line {
         width: 100px;
         height: 2px;
-        background: white;
+         background-color: #2c5f5f;
         margin: 0 auto;
     }
 
@@ -389,6 +411,10 @@
     background: #dc3545;
     color: white;
 }
+
+
+
+
 </style>
 
 <!-- Header -->
@@ -398,7 +424,6 @@
             <span class="logo-icon">c:</span>
             <span>HELPY</span>
         </div>
-        <nav>
             <ul class="nav-links">
                 <li><a href="{% url 'lista_eventos' %}">EVENTOS</a></li>
                 <li><a href="{% url 'sobre_nosotros' %}">OBJETIVOS</a></li>
@@ -408,8 +433,7 @@
                     <li><a href="#" id="openLoginBtn" style="cursor: pointer;">ÚNETE</a></li>
                 {% endif %}
             </ul>
-        </nav>
-    </div>
+         </div>
 </header>
 
 <!-- Ventana emergente (modal) -->
@@ -482,7 +506,14 @@
 </script>
 
 <!-- Hero Section -->
+{% load static %}
+
 <section class="hero">
+    <video autoplay muted loop playsinline class="video-bg">
+        <source src="{% static 'videos/fondo_vid.mp4' %}" type="video/mp4">
+    </video>
+
+    <!-- 🌟 Contenido encima -->
     <div class="hero-content">
         <h1>CONECTA, AYUDA, IMPACTA</h1>
         <p>Únete a nuestra comunidad y crea eventos que marquen la diferencia en tu comunidad</p>
@@ -493,6 +524,9 @@
         {% endif %}
     </div>
 </section>
+
+
+
 
 <!-- Events Section -->
 <section class="events-section">
