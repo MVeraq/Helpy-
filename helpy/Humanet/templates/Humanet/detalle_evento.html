@@ -6,6 +6,55 @@
     <title>{{ evento.nombre }} - Helpy</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
+    .btn-inscribirse {
+        display: inline-block;
+        background: #28a745;
+        color: white;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+
+    .btn-inscribirse:hover {
+        background: #218838;
+    }
+
+    .btn-cancelar-inscripcion {
+        display: inline-block;
+        background: #ffc107;
+        color: #000;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+
+    .btn-cancelar-inscripcion:hover {
+        background: #e0a800;
+    }
+
+    .btn-eliminar-evento {
+        display: inline-block;
+        background: #dc3545;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-left: 10px;
+    }
+
+    .btn-eliminar-evento:hover {
+        background: #c82333;
+    }
         * {
             margin: 0;
             padding: 0;
@@ -223,20 +272,56 @@
             {% endif %}
         </div>
         
-        <div class="acciones">
-            <a href="{% url 'lista_eventos' %}" class="btn-volver">← Volver a la lista</a>
-            
-            {% if user.is_authenticated %}
-                <button class="btn-inscribirse">✅ Inscribirme en este evento</button>
-            {% else %}
-                <div class="login-alert">
-                    💡 <strong>¿Quieres participar?</strong> 
-                    <a href="{% url 'login' %}">Inicia sesión</a> o 
-                    <a href="{% url 'registro' %}">regístrate</a> para inscribirte en este evento.
-                </div>
-            {% endif %}
+        <div class="seccion">
+    <h3>👥 Inscritos ({{ total_inscritos }})</h3>
+    
+    {% if inscripciones %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;">
+        {% for inscripcion in inscripciones %}
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">
+                {{ inscripcion.usuario.username|slice:":1"|upper }}
+            </div>
+            <a href="{% url 'perfil_publico' inscripcion.usuario.username %}" style="color: #007bff; text-decoration: none; font-weight: bold;">
+                {{ inscripcion.usuario.username }}
+            </a>
+            <p style="font-size: 12px; color: #666; margin-top: 5px;">
+                {{ inscripcion.fecha_inscripcion|date:"d/m/Y" }}
+            </p>
         </div>
-    </main>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="text-align: center; color: #999; padding: 30px;">Aún no hay inscritos en este evento.</p>
+    {% endif %}
+</div>
+
+<div class="acciones">
+    <a href="{% url 'lista_eventos' %}" class="btn-volver">← Volver a la lista</a>
+    
+    <!-- Botón eliminar (solo para creador o admin) -->
+    {% if user.is_authenticated %}
+        {% if user == evento.creador or user.is_staff %}
+        <a href="{% url 'eliminar_evento' evento.id %}" class="btn-eliminar-evento">🗑️ Eliminar Evento</a>
+        {% endif %}
+    {% endif %}
+    
+    {% if user.is_authenticated %}
+        {% if user != evento.creador %}
+            {% if usuario_inscrito %}
+                <a href="{% url 'cancelar_inscripcion' evento.id %}" class="btn-cancelar-inscripcion">❌ Cancelar Inscripción</a>
+            {% else %}
+                <a href="{% url 'inscribir_evento' evento.id %}" class="btn-inscribirse">✅ Inscribirme</a>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <div class="login-alert">
+            💡 <strong>¿Quieres participar?</strong> 
+            <a href="{% url 'login' %}">Inicia sesión</a> o 
+            <a href="{% url 'registro' %}">regístrate</a> para inscribirte en este evento.
+        </div>
+    {% endif %}
+</div>
     
     {% if evento.latitud and evento.longitud %}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -252,6 +337,7 @@
             .bindPopup('<b>{{ evento.nombre }}</b><br>{{ evento.ubicacion }}')
             .openPopup();
     </script>
-    {% endif %}
+{% endif %}
+
 </body>
 </html>

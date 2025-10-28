@@ -1,8 +1,30 @@
 {% extends 'Humanet/base.html' %}
 
 {% block title %}Inicio - Helpy{% endblock %}
-
 {% block content %}
+
+<!-- Mensajes de Django -->
+{% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+    <div class="message-alert {% if message.tags == 'success' %}message-success{% elif message.tags == 'error' %}message-error{% endif %}">
+        {% if message.tags == 'success' %}✅{% else %}❌{% endif %}
+        <span>{{ message }}</span>
+    </div>
+    {% endfor %}
+</div>
+<script>
+    // Auto-ocultar mensajes después de 5 segundos
+    setTimeout(() => {
+        document.querySelectorAll('.message-alert').forEach(msg => {
+            msg.style.opacity = '0';
+            msg.style.transform = 'translateX(400px)';
+            setTimeout(() => msg.remove(), 300);
+        });
+    }, 5000);
+</script>
+{% endif %}
+
 <style>
     * {
         margin: 0;
@@ -65,6 +87,10 @@
 
     .nav-links a:hover {
         color: #a8e6cf;
+    }
+
+    .sistema_login{
+        display: none;
     }
 
     /* Hero Section */
@@ -270,6 +296,99 @@
             display: none;
         }
     }
+
+/* Modal Styles */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    max-width: 450px;
+    width: 90%;
+    margin: auto;
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: #2c5f5f;
+}
+
+/* Mensajes de éxito/error */
+.messages-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+}
+
+.message-alert {
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    animation: slideInRight 0.4s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.message-success {
+    background: #28a745;
+    color: white;
+}
+
+.message-error {
+    background: #dc3545;
+    color: white;
+}
 </style>
 
 <!-- Header -->
@@ -286,12 +405,81 @@
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'perfil' %}">PERFIL</a></li>
                 {% else %}
-                    <li><a href="{% url 'login' %}">ÚNETE</a></li>
+                    <li><a href="#" id="openLoginBtn" style="cursor: pointer;">ÚNETE</a></li>
                 {% endif %}
             </ul>
         </nav>
     </div>
 </header>
+
+<!-- Ventana emergente (modal) -->
+<div id="loginModal" class="modal-overlay">
+  <!-- Contenedor del formulario -->
+  <div class="modal-content">
+    <!-- Botón de cierre -->
+    <span id="closeLoginBtn" class="close-btn">&times;</span>
+    
+    <h2 style="text-align: center; margin-bottom: 30px; color: #2c5f5f;">Iniciar Sesión</h2>
+    
+    <form method="post" action="{% url 'inicio' %}">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 20px;">
+            <label for="id_username" style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Usuario:</label>
+            <input type="text" name="username" id="id_username" required 
+                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label for="id_password" style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Contraseña:</label>
+            <input type="password" name="password" id="id_password" required
+                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 12px; background: #2c5f5f; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; transition: background 0.3s;">
+            Iniciar Sesión
+        </button>
+    </form>
+
+    <p style="text-align: center; margin-top: 20px; color: #666;">
+        ¿No tienes cuenta? <a href="{% url 'registro' %}" style="color: #2c5f5f; font-weight: bold; text-decoration: none;">Regístrate aquí</a>
+    </p>
+  </div>
+</div>
+
+<!-- Script para abrir/cerrar el modal y mensajes -->
+<script>
+  const openBtn = document.getElementById('openLoginBtn');
+  const closeBtn = document.getElementById('closeLoginBtn');
+  const modal = document.getElementById('loginModal');
+
+  // Abrir modal
+  if (openBtn) {
+    openBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      modal.style.display = 'flex';
+    });
+  }
+
+  // Cerrar modal
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+  }
+
+  // Cierra el modal al hacer clic fuera del contenido
+  window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+
+  // Si hubo error de login, abrir el modal automáticamente
+  {% if show_login_error %}
+  modal.style.display = 'flex';
+  {% endif %}
+</script>
 
 <!-- Hero Section -->
 <section class="hero">
@@ -364,15 +552,6 @@
     </div>
 </section>
 
-<div class="chat-container">
-  <div class="chat-box" id="chatBox">
-    <div class="message bot">👋 ¡Hola! Cuéntame qué tipo de eventos te interesan.</div>
-  </div>
-  <div class="input-area">
-    <input id="userInput" type="text" placeholder="Escribe tus preferencias...">
-    <button onclick="sendMessage()">Enviar</button>
-  </div>
-</div>
 
 <!-- Footer -->
 <footer class="footer">
@@ -427,4 +606,5 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 {% endblock %}
+
 

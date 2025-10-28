@@ -40,3 +40,17 @@ class Evento(models.Model):
     
     def __str__(self):
         return f"{self.nombre} - {self.fecha}"
+    
+class Inscripcion(models.Model):
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name='inscripciones')
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='inscripciones')
+    fecha_inscripcion = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('evento', 'usuario')  # Un usuario no puede inscribirse dos veces al mismo evento
+        ordering = ['-fecha_inscripcion']
+        verbose_name = 'Inscripción'
+        verbose_name_plural = 'Inscripciones'
+    
+    def __str__(self):
+        return f"{self.usuario.username} → {self.evento.nombre}"

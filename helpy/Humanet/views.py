@@ -2,14 +2,31 @@ from django.shortcuts import render, redirect
 from .forms import RegistroForm, EventoForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, logout
-from .models import PerfilUsuario, Evento, User
+from .models import PerfilUsuario, Evento, User, Inscripcion  
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 
 def inicio(request):
-    # Obtener los últimos 3 eventos para mostrar en la página de inicio
-    eventos_destacados = Evento.objects.all().order_by('-fecha')[:3]
-    return render(request, 'Humanet/inicio.html', {'eventos_destacados': eventos_destacados})
+    if request.method == 'POST' and 'username' in request.POST:
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            messages.success(request, f'¡Bienvenido de nuevo, {user.first_name}!')
+            return redirect('inicio')
+        else:
+            messages.error(request, 'Usuario o contraseña incorrectos.')
+    
+    eventos_destacados = Evento.objects.all().order_by('-fecha_creacion')[:6]
+    
+    context = {
+        'eventos_destacados': eventos_destacados,
+        'show_login_error': request.method == 'POST' and 'username' in request.POST
+    }
+    return render(request, 'Humanet/inicio.html', context)
+
 
 def sobre_nosotros(request):
     return render(request, 'Humanet/sobre_nosotros.html')
@@ -46,8 +63,6 @@ def registro(request):
 @login_required
 def perfil(request):
     perfil, created = PerfilUsuario.objects.get_or_create(usuario=request.user)
-    
-    # Verificar si hay mensaje en la URL
     mensaje = request.GET.get('mensaje')
     evento_nombre = request.GET.get('evento', '')
     
@@ -128,3 +143,56 @@ def eliminar_evento(request, evento_id):
     else:
         messages.error(request, 'No tienes permiso para eliminar este evento.')
         return redirect('detalle_evento', evento_id=evento_id)
+
+
+@login_required
+def inscribir_evento(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    
+    # No permitir que el creador se inscriba en su propio evento
+    if request.user == evento.creador:
+        messages.warning(request, 'No puedes inscribirte en tu propio evento.')
+        return redirect('detalle_evento', evento_id=evento_id)
+    
+    # Verificar si ya está inscrito
+    if Inscripcion.objects.filter(evento=evento, usuario=request.user).exists():
+        messages.info(request, 'Ya estás inscrito en este evento.')
+        return redirect('detalle_evento', evento_id=evento_id)
+    
+    # Crear la inscripción
+    Inscripcion.objects.create(evento=evento, usuario=request.user)
+    messages.success(request, f'¡Te has inscrito exitosamente en "{evento.nombre}"!')
+    return redirect('detalle_evento', evento_id=evento_id)
+
+
+@login_required
+def cancelar_inscripcion(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    
+    try:
+        inscripcion = Inscripcion.objects.get(evento=evento, usuario=request.user)
+        inscripcion.delete()
+        messages.success(request, f'Has cancelado tu inscripción en "{evento.nombre}".')
+    except Inscripcion.DoesNotExist:
+        messages.error(request, 'No estabas inscrito en este evento.')
+    
+    return redirect('detalle_evento', evento_id=evento_id)
+
+
+def detalle_evento(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    inscripciones = evento.inscripciones.all()
+    total_inscritos = inscripciones.count()
+    
+    # Verificar si el usuario actual está inscrito
+    usuario_inscrito = False
+    if request.user.is_authenticated:
+        usuario_inscrito = Inscripcion.objects.filter(evento=evento, usuario=request.user).exists()
+    
+    context = {
+        'evento': evento,
+        'inscripciones': inscripciones,
+        'total_inscritos': total_inscritos,
+        'usuario_inscrito': usuario_inscrito,
+    }
+    return render(request, 'Humanet/detalle_evento.html', context)

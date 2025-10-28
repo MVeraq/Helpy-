@@ -457,23 +457,44 @@
                 </div>
             </div>
             
-            <!-- Eventos inscritos -->
-            <div class="event-box">
-                <div class="event-box-header" onclick="toggleEventBox('enrolled')">
-                    <div class="event-box-title">
-                        ✅ Eventos Inscritos
-                    </div>
-                    <div class="toggle-icon" id="toggle-enrolled">▼</div>
+<!-- Eventos inscritos -->
+<div class="event-box">
+    <div class="event-box-header" onclick="toggleEventBox('enrolled')">
+        <div class="event-box-title">
+            ✅ Eventos Inscritos ({{ user.inscripciones.count }})
+        </div>
+        <div class="toggle-icon" id="toggle-enrolled">▼</div>
+    </div>
+    
+    <div class="event-content" id="content-enrolled">
+        {% if user.inscripciones.all %}
+        <ul class="event-list">
+            {% for inscripcion in user.inscripciones.all %}
+            <li class="event-item">
+                <div class="event-item-info">
+                    <h4>{{ inscripcion.evento.nombre }}</h4>
+                    <p>📅 {{ inscripcion.evento.fecha|date:"d/m/Y" }} | 🕐 {{ inscripcion.evento.hora|time:"H:i" }}</p>
+                    <p>📍 {{ inscripcion.evento.ubicacion|truncatewords:10 }}</p>
+                    <p style="font-size: 12px; color: #999;">Inscrito el {{ inscripcion.fecha_inscripcion|date:"d/m/Y" }}</p>
                 </div>
-                
-                <div class="event-content" id="content-enrolled">
-                    <!-- Por ahora vacío - implementaremos la inscripción después -->
-                    <div class="no-events">
-                        <p>Aún no te has inscrito en ningún evento.</p>
-                        <p><a href="{% url 'lista_eventos' %}" style="color: #2c5f5f;">Ver eventos disponibles →</a></p>
-                    </div>
+                <div class="event-item-actions">
+                    <a href="{% url 'detalle_evento' inscripcion.evento.id %}" class="btn-small btn-ver">👁️ Ver</a>
+                    <a href="{% url 'cancelar_inscripcion' inscripcion.evento.id %}" class="btn-small btn-eliminar" 
+                       onclick="return confirm('¿Seguro que quieres cancelar tu inscripción?')">
+                        ❌ Cancelar
+                    </a>
                 </div>
-            </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="no-events">
+            <p>Aún no te has inscrito en ningún evento.</p>
+            <p><a href="{% url 'lista_eventos' %}" style="color: #667eea;">Ver eventos disponibles →</a></p>
+        </div>
+        {% endif %}
+    </div>
+</div>
         </div>
     </div>
     
