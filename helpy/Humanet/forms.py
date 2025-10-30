@@ -76,45 +76,6 @@ class EventoForm(forms.ModelForm):
         label='Hora del evento'
     )
     
-    class Meta:
-        model = Evento
-        fields = ['nombre', 'fecha', 'hora', 'ubicacion', 'latitud', 'longitud', 
-                  'descripcion', 'detalles', 'imagen']
-        widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Jornada de limpieza comunitaria'}),
-            'ubicacion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Plaza principal, Villa Alemana'}),
-            'latitud': forms.HiddenInput(),
-            'longitud': forms.HiddenInput(),
-            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describe brevemente el evento...'}),
-            'detalles': forms.Textarea(attrs={'class': 'form-control', 'rows': 6, 'placeholder': 'Información adicional, materiales necesarios, etc.'}),
-            'imagen': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
-        }
-        labels = {
-            'nombre': 'Nombre del evento',
-            'ubicacion': 'Ubicación',
-            'descripcion': 'Descripción',
-            'detalles': 'Detalles adicionales',
-            'imagen': 'Imagen del evento',
-        }
-
-class EventoForm(forms.ModelForm):
-    fecha = forms.DateField(
-        widget=forms.DateInput(attrs={
-            'type': 'date',
-            'class': 'form-control'
-        }),
-        label='Fecha del evento'
-    )
-    
-    hora = forms.TimeField(
-        widget=forms.TimeInput(attrs={
-            'type': 'time',
-            'class': 'form-control'
-        }),
-        label='Hora del evento'
-    )
-    
-    # NUEVO: Campo de categorías
     categorias = forms.ModelMultipleChoiceField(
         queryset=Categoria.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -123,13 +84,22 @@ class EventoForm(forms.ModelForm):
         required=True
     )
     
+    imagen = forms.ImageField(
+        required=False,
+        label='Imagen del evento',
+        help_text='Formato: JPG, PNG. Tamaño máximo: 5MB',
+        widget=forms.FileInput(attrs={'accept': 'image/*'})
+    )
+    
     class Meta:
         model = Evento
-        fields = ['nombre', 'fecha', 'hora', 'ubicacion', 'latitud', 'longitud', 
-                  'descripcion', 'detalles', 'categorias']
+        fields = ['nombre', 'imagen', 'fecha', 'hora', 'region', 'ciudad', 'ubicacion', 
+                  'latitud', 'longitud', 'descripcion', 'detalles', 'categorias']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Jornada de limpieza comunitaria'}),
-            'ubicacion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Plaza principal, Villa Alemana'}),
+            'region': forms.Select(attrs={'class': 'form-control'}),
+            'ciudad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Villa Alemana'}),
+            'ubicacion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Plaza principal'}),
             'latitud': forms.HiddenInput(),
             'longitud': forms.HiddenInput(),
             'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describe brevemente el evento...'}),
@@ -137,7 +107,9 @@ class EventoForm(forms.ModelForm):
         }
         labels = {
             'nombre': 'Nombre del evento',
-            'ubicacion': 'Ubicación',
+            'region': 'Región',
+            'ciudad': 'Ciudad',
+            'ubicacion': 'Ubicación específica',
             'descripcion': 'Descripción',
             'detalles': 'Detalles adicionales',
         }

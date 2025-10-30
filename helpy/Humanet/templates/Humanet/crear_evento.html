@@ -169,6 +169,34 @@
                 <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
                 {{ form.nombre }}
             </div>
+
+            <!-- NUEVA SECCIÓN DE IMAGEN -->
+            <div class="form-group">
+                <label for="{{ form.imagen.id_for_label }}">
+                    📸 {{ form.imagen.label }}
+                </label>
+                {{ form.imagen }}
+                {% if form.imagen.help_text %}
+                <div class="help-text">{{ form.imagen.help_text }}</div>
+                {% endif %}
+                <div id="imagePreview" style="margin-top: 15px; display: none;">
+                    <img id="previewImg" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid #ddd;">
+                </div>
+            </div>
+
+            <script>
+            document.getElementById('id_imagen').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('previewImg').src = e.target.result;
+                        document.getElementById('imagePreview').style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+            </script>
             
             <div class="form-group">
                 <label for="{{ form.fecha.id_for_label }}">{{ form.fecha.label }}</label>
@@ -179,6 +207,22 @@
                 <label for="{{ form.hora.id_for_label }}">{{ form.hora.label }}</label>
                 {{ form.hora }}
             </div>
+
+            <!-- NUEVOS CAMPOS DE UBICACIÓN -->
+            <div class="form-group">
+                <label for="{{ form.region.id_for_label }}">{{ form.region.label }}</label>
+                {{ form.region }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.ciudad.id_for_label }}">{{ form.ciudad.label }}</label>
+                {{ form.ciudad }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.ubicacion.id_for_label }}">{{ form.ubicacion.label }}</label>
+                {{ form.ubicacion }}
+    ...
             
             <div class="form-group">
                 <label for="{{ form.ubicacion.id_for_label }}">{{ form.ubicacion.label }}</label>

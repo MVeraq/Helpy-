@@ -433,19 +433,45 @@
                     {% if user.eventos.all %}
                     <ul class="event-list">
                         {% for evento in user.eventos.all %}
-                        <li class="event-item">
-                            <div class="event-item-info">
-                                <h4>{{ evento.nombre }}</h4>
-                                <p>📅 {{ evento.fecha|date:"d/m/Y" }} | 🕐 {{ evento.hora|time:"H:i" }}</p>
-                                <p>📍 {{ evento.ubicacion|truncatewords:10 }}</p>
-                            </div>
-                            <div class="event-item-actions">
-                                <a href="{% url 'detalle_evento' evento.id %}" class="btn-small btn-ver">👁️ Ver</a>
-                                <button class="btn-small btn-eliminar" onclick="confirmarEliminar('{{ evento.nombre }}', {{ evento.id }})">
-                                    🗑️ Eliminar
-                                </button>
-                            </div>
-                        </li>
+                        {% for evento in user.eventos.all %}
+            <li class="event-item">
+                <div style="display: flex; gap: 15px; align-items: center; flex: 1;">
+                    <!-- AGREGAR MINIATURA -->
+                    {% if evento.imagen %}
+                    <img src="{{ evento.imagen.url }}" 
+                        alt="{{ evento.nombre }}" 
+                        style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+                    {% else %}
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: white;">
+                        {{ evento.categorias.first.icono|default:"📅" }}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="event-item-info" style="flex: 1;">
+                        <h4>{{ evento.nombre }}</h4>
+                        
+                        <!-- AGREGAR CATEGORÍAS -->
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px; margin: 5px 0;">
+                            {% for categoria in evento.categorias.all|slice:":2" %}
+                            <span style="padding: 2px 8px; background: {{ categoria.color }}; color: white; border-radius: 10px; font-size: 10px; font-weight: bold;">
+                                {{ categoria.icono }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        
+                        <p>📅 {{ evento.fecha|date:"d/m/Y" }} | 🕐 {{ evento.hora|time:"H:i" }}</p>
+                        <p>📍 {{ evento.ubicacion|truncatewords:10 }}</p>
+                    </div>
+                </div>
+                
+                <div class="event-item-actions">
+                    <a href="{% url 'detalle_evento' evento.id %}" class="btn-small btn-ver">👁️ Ver</a>
+                    <button class="btn-small btn-eliminar" onclick="confirmarEliminar('{{ evento.nombre }}', {{ evento.id }})">
+                        🗑️ Eliminar
+                    </button>
+                </div>
+            </li>
+            {% endfor %}
                         {% endfor %}
                     </ul>
                     {% else %}

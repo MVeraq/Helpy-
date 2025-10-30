@@ -79,24 +79,66 @@ def seleccionar_preferencias(request):
 
 
 def lista_eventos(request):
-    # Filtrar eventos según preferencias si el usuario está autenticado
+    eventos = Evento.objects.all()
+    
+    # Búsqueda por texto
+    busqueda = request.GET.get('busqueda', '')
+    if busqueda:
+        eventos = eventos.filter(
+            Q(nombre__icontains=busqueda) |
+            Q(descripcion__icontains=busqueda) |
+            Q(ciudad__icontains=busqueda) |
+            Q(ubicacion__icontains=busqueda)
+        )
+    
+    # Filtro por categorías
+    categorias_filtro = request.GET.getlist('categorias')
+    if categorias_filtro:
+        eventos = eventos.filter(categorias__id__in=categorias_filtro).distinct()
+    
+    # Filtro por región
+    region_filtro = request.GET.get('region', '')
+    if region_filtro:
+        eventos = eventos.filter(region=region_filtro)
+    
+    # Filtro por fecha
+    fecha_desde = request.GET.get('fecha_desde', '')
+    fecha_hasta = request.GET.get('fecha_hasta', '')
+    if fecha_desde:
+        eventos = eventos.filter(fecha__gte=fecha_desde)
+    if fecha_hasta:
+        eventos = eventos.filter(fecha__lte=fecha_hasta)
+    
+    # Ordenar por relevancia si el usuario está autenticado
     if request.user.is_authenticated:
         try:
             perfil = request.user.perfilusuario
             if perfil.preferencias.exists():
-                # Eventos ordenados por relevancia (más coincidencias primero)
-                eventos = Evento.objects.annotate(
+                eventos = eventos.annotate(
                     coincidencias=Count('categorias', filter=Q(categorias__in=perfil.preferencias.all()))
                 ).order_by('-coincidencias', '-fecha_creacion')
             else:
-                eventos = Evento.objects.all().order_by('-fecha_creacion')
+                eventos = eventos.order_by('-fecha_creacion')
         except PerfilUsuario.DoesNotExist:
-            eventos = Evento.objects.all().order_by('-fecha_creacion')
+            eventos = eventos.order_by('-fecha_creacion')
     else:
-        eventos = Evento.objects.all().order_by('-fecha_creacion')
+        eventos = eventos.order_by('-fecha_creacion')
     
-    return render(request, 'Humanet/lista_eventos.html', {'eventos': eventos})
-
+    # Obtener todas las categorías y regiones para los filtros
+    todas_categorias = Categoria.objects.all()
+    regiones = Evento.REGIONES
+    
+    context = {
+        'eventos': eventos,
+        'todas_categorias': todas_categorias,
+        'regiones': regiones,
+        'busqueda': busqueda,
+        'categorias_filtro': categorias_filtro,
+        'region_filtro': region_filtro,
+        'fecha_desde': fecha_desde,
+        'fecha_hasta': fecha_hasta,
+    }
+    return render(request, 'Humanet/lista_eventos.html', context)
 
 def registro(request):
     if request.method == 'POST':
@@ -163,11 +205,13 @@ def perfil(request):
 @login_required
 def crear_evento(request):
     if request.method == 'POST':
-        form = EventoForm(request.POST)
+        form = EventoForm(request.POST, request.FILES)  # ← Agrega request.FILES
         if form.is_valid():
             evento = form.save(commit=False)
             evento.creador = request.user
             evento.save()
+            form.save_m2m()  # Guardar las categorías (ManyToMany)
+            messages.success(request, f'¡Evento "{evento.nombre}" creado exitosamente!')
             return redirect('lista_eventos')
     else:
         form = EventoForm()

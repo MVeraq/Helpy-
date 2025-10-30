@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - Helpy</title>
+    <title>Eventos - Helpy</title>
     <style>
         * {
             margin: 0;
@@ -12,330 +12,531 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             line-height: 1.6;
-            background: linear-gradient(135deg, #2c5f5f 0%, #a8e6cf 100%);
             padding: 20px;
-            min-height: 100vh;
+            background-color: #f4f4f4;
         }
         
         header {
-            background: #2c5f5f;
+            background: #333;
             color: #fff;
             padding: 20px;
             margin-bottom: 30px;
-            text-align: center;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(44, 95, 95, 0.3);
+        }
+        
+        header h1 {
+            margin-bottom: 10px;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        nav a:hover {
+            text-decoration: underline;
         }
         
         main {
-            max-width: 700px;
+            max-width: 1400px;
             margin: 0 auto;
+        }
+        
+        /* Barra de búsqueda y filtros */
+        .search-filter-container {
             background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(44, 95, 95, 0.2);
-        }
-        
-        h2 {
-            color: #2c5f5f;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 30px;
-            text-align: center;
-            font-size: 2rem;
         }
         
-        .form-group {
+        .search-box {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
         }
         
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #2c5f5f;
-        }
-        
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        input[type="file"],
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #a8e6cf;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-        
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="password"]:focus,
-        input[type="file"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #2c5f5f;
-        }
-        
-        textarea {
-            resize: vertical;
-            font-family: Arial, sans-serif;
-        }
-        
-        
-        .tipo-cuenta-group {
-            background: linear-gradient(135deg, #a8e6cf 0%, #d4f1e8 100%);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            border-left: 4px solid #2c5f5f;
-        }
-        
-        .tipo-cuenta-group > label {
-            font-weight: bold;
-            margin-bottom: 15px;
-            display: block;
-            color: #2c5f5f;
-        }
-        
-        .radio-options {
-            display: flex;
-            gap: 15px;
-            flex-direction: column;
-        }
-        
-        .radio-option {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background: white;
-            border: 2px solid #a8e6cf;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .radio-option:hover {
-            border-color: #2c5f5f;
-            background: #f0f8f4;
-        }
-        
-        .radio-option input[type="radio"] {
-            margin-right: 10px;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-        
-        .radio-option label {
-            margin: 0;
-            cursor: pointer;
-            font-weight: normal;
-        }
-        
-        button[type="submit"] {
-            width: 100%;
-            background: #2c5f5f;
-            color: white;
-            padding: 15px;
-            border: none;
+        .search-box input[type="text"] {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
+        }
+        
+        .search-box input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-box button {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(44, 95, 95, 0.3);
+            transition: background 0.3s;
         }
         
-        button[type="submit"]:hover {
-            background: #1e4a4a;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(44, 95, 95, 0.4);
+        .search-box button:hover {
+            background: #5568d3;
         }
         
-        .error-list {
-            background: #f8d7da;
-            color: #721c24;
+        .filter-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .filter-toggle:hover {
+            color: #5568d3;
+        }
+        
+        .filters-panel {
+            display: none;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+        
+        .filters-panel.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .filter-group {
+            background: #f8f9fa;
             padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
+            border-radius: 8px;
         }
         
-        .error-list ul {
-            list-style: none;
+        .filter-group h4 {
+            margin-bottom: 10px;
+            color: #333;
         }
         
-        .error-list li {
+        .filter-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             margin-bottom: 8px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.2s;
         }
         
-        .login-link {
-            text-align: center;
+        .filter-group label:hover {
+            background: white;
+        }
+        
+        .filter-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .filter-group select,
+        .filter-group input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 10px;
             margin-top: 20px;
-            color: #2c5f5f;
         }
         
-        .login-link a {
-            color: #2c5f5f;
+        .btn-aplicar {
+            flex: 1;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .btn-aplicar:hover {
+            background: #218838;
+        }
+        
+        .btn-limpiar {
+            flex: 1;
+            padding: 10px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .btn-limpiar:hover {
+            background: #5a6268;
+        }
+        
+        /* Botón crear evento */
+        .crear-btn {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        
+        .crear-btn:hover {
+            background: #218838;
+        }
+        
+        /* Grid de eventos */
+        .eventos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        
+        .evento-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .evento-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .evento-imagen {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .evento-imagen-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: white;
+        }
+        
+        .evento-content {
+            padding: 20px;
+        }
+        
+        .evento-categorias {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .categoria-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .evento-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .evento-info {
+            color: #666;
+            font-size: 14px;
+            margin: 8px 0;
+        }
+        
+        .evento-info strong {
+            color: #333;
+        }
+        
+        .evento-descripcion {
+            color: #666;
+            line-height: 1.6;
+            margin: 12px 0;
+        }
+        
+        .ver-mas {
+            display: inline-block;
+            margin-top: 12px;
+            color: #007bff;
             text-decoration: none;
             font-weight: bold;
         }
         
-        .login-link a:hover {
+        .ver-mas:hover {
             text-decoration: underline;
         }
         
-        .help-text {
-            font-size: 12px;
-            color: #2c5f5f;
-            margin-top: 5px;
+        .no-eventos {
+            text-align: center;
+            padding: 50px;
+            background: white;
+            border-radius: 10px;
         }
         
-        .section-title {
-            background: linear-gradient(135deg, #a8e6cf 0%, #d4f1e8 100%);
-            padding: 12px 20px;
-            margin: 30px -40px 20px -40px;
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .filter-chip button {
+            background: none;
+            border: none;
+            color: #1976d2;
+            cursor: pointer;
             font-weight: bold;
-            color: #2c5f5f;
-        }
-        
-        .optional-label {
-            color: #2c5f5f;
-            font-weight: normal;
-            font-size: 12px;
+            padding: 0;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Únete a Helpy</h1>
-        <p>Crea tu cuenta y comienza a participar en eventos de ayuda comunitaria</p>
+        <h1>Eventos de Ayuda Comunitaria</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="{% url 'sobre_nosotros' %}">Sobre Nosotros</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'perfil' %}">Mi Perfil</a></li>
+                    <li><a href="{% url 'logout' %}">Cerrar Sesión</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
+                    <li><a href="{% url 'registro' %}">Registrarse</a></li>
+                {% endif %}
+            </ul>
+        </nav>
     </header>
     
     <main>
-        <h2>Registro de Usuario</h2>
+        {% if user.is_authenticated %}
+            <a href="{% url 'crear_evento' %}" class="crear-btn">+ Crear Nuevo Evento</a>
+        {% endif %}
         
-        {% if form.errors %}
-        <div class="error-list">
-            <strong>⚠️ Por favor corrige los siguientes errores:</strong>
-            <ul>
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
-                    {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <li><strong>Error:</strong> {{ error }}</li>
-                {% endfor %}
-            </ul>
+        <!-- Barra de búsqueda y filtros -->
+        <div class="search-filter-container">
+            <form method="get" id="filterForm">
+                <div class="search-box">
+                    <input type="text" 
+                           name="busqueda" 
+                           placeholder="🔍 Buscar eventos por nombre, descripción, ciudad..." 
+                           value="{{ busqueda }}">
+                    <button type="submit">Buscar</button>
+                </div>
+                
+                <div class="filter-toggle" onclick="toggleFilters()">
+                    <span id="filterIcon">▼</span>
+                    <span>Filtros Avanzados</span>
+                </div>
+                
+                <div class="filters-panel" id="filtersPanel">
+                    <!-- Filtro por Categorías -->
+                    <div class="filter-group">
+                        <h4>🏷️ Categorías</h4>
+                        {% for categoria in todas_categorias %}
+                        <label>
+                            <input type="checkbox" 
+                                   name="categorias" 
+                                   value="{{ categoria.id }}"
+                                   {% if categoria.id|stringformat:"s" in categorias_filtro %}checked{% endif %}>
+                            <span>{{ categoria.icono }} {{ categoria.nombre }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Filtro por Región -->
+                    <div class="filter-group">
+                        <h4>📍 Región</h4>
+                        <select name="region">
+                            <option value="">Todas las regiones</option>
+                            {% for value, label in regiones %}
+                            <option value="{{ value }}" {% if region_filtro == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Filtro por Fecha -->
+                    <div class="filter-group">
+                        <h4>📅 Rango de Fechas</h4>
+                        <label>Desde:</label>
+                        <input type="date" name="fecha_desde" value="{{ fecha_desde }}">
+                        <label>Hasta:</label>
+                        <input type="date" name="fecha_hasta" value="{{ fecha_hasta }}">
+                    </div>
+                    
+                    <div class="filter-actions">
+                        <button type="submit" class="btn-aplicar">✓ Aplicar Filtros</button>
+                        <button type="button" class="btn-limpiar" onclick="limpiarFiltros()">✗ Limpiar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Filtros activos -->
+        {% if busqueda or categorias_filtro or region_filtro or fecha_desde or fecha_hasta %}
+        <div class="active-filters">
+            <strong style="margin-right: 10px;">Filtros activos:</strong>
+            {% if busqueda %}
+            <span class="filter-chip">
+                Búsqueda: "{{ busqueda }}"
+                <button onclick="removeFilter('busqueda')">✕</button>
+            </span>
+            {% endif %}
+            {% if region_filtro %}
+            <span class="filter-chip">
+                Región: {{ region_filtro }}
+                <button onclick="removeFilter('region')">✕</button>
+            </span>
+            {% endif %}
+            {% if fecha_desde %}
+            <span class="filter-chip">
+                Desde: {{ fecha_desde }}
+                <button onclick="removeFilter('fecha_desde')">✕</button>
+            </span>
+            {% endif %}
+            {% if fecha_hasta %}
+            <span class="filter-chip">
+                Hasta: {{ fecha_hasta }}
+                <button onclick="removeFilter('fecha_hasta')">✕</button>
+            </span>
+            {% endif %}
         </div>
         {% endif %}
         
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            
-            <!-- Tipo de cuenta -->
-            <div class="tipo-cuenta-group">
-                <label>{{ form.tipo_cuenta.label }}</label>
-                <div class="radio-options">
-                    {% for value, text in form.tipo_cuenta.field.choices %}
-                    <div class="radio-option">
-                        <input type="radio" 
-                               name="{{ form.tipo_cuenta.name }}" 
-                               value="{{ value }}" 
-                               id="id_tipo_{{ value }}"
-                               {% if forloop.first %}checked{% endif %}>
-                        <label for="id_tipo_{{ value }}">
-                            {% if value == 'individuo' %}👤{% else %}🏢{% endif %} {{ text }}
-                        </label>
+        <!-- Grid de eventos -->
+        {% if eventos %}
+        <div class="eventos-grid">
+            {% for evento in eventos %}
+            <div class="evento-card">
+                {% if evento.imagen %}
+                    <img src="{{ evento.imagen.url }}" alt="{{ evento.nombre }}" class="evento-imagen">
+                {% else %}
+                    <div class="evento-imagen-placeholder">
+                        {{ evento.categorias.first.icono|default:"📅" }}
                     </div>
-                    {% endfor %}
+                {% endif %}
+                
+                <div class="evento-content">
+                    <div class="evento-categorias">
+                        {% for categoria in evento.categorias.all %}
+                        <span class="categoria-badge" style="background: {{ categoria.color }};">
+                            {{ categoria.icono }} {{ categoria.nombre }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    
+                    <h3 class="evento-title">{{ evento.nombre }}</h3>
+                    
+                    <div class="evento-info">
+                        <strong>📅 Fecha:</strong> {{ evento.fecha|date:"d/m/Y" }}
+                    </div>
+                    <div class="evento-info">
+                        <strong>🕐 Hora:</strong> {{ evento.hora|time:"H:i" }}
+                    </div>
+                    <div class="evento-info">
+                        <strong>📍 Lugar:</strong> 
+                        {% if evento.ciudad %}{{ evento.ciudad }}, {% endif %}
+                        {{ evento.ubicacion|truncatewords:5 }}
+                    </div>
+                    <div class="evento-info">
+                        <strong>👤 Creado por:</strong> 
+                        <a href="{% url 'perfil_publico' evento.creador.username %}" style="color: #007bff;">
+                            {{ evento.creador.username }}
+                        </a>
+                    </div>
+                    
+                    <p class="evento-descripcion">{{ evento.descripcion|truncatewords:20 }}</p>
+                    
+                    <a href="{% url 'detalle_evento' evento.id %}" class="ver-mas">Ver más detalles →</a>
                 </div>
             </div>
-            
-            <div class="section-title">📋 Información básica</div>
-            
-            <div class="form-group">
-                <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
-                {{ form.email }}
-                <div class="help-text">Usaremos tu email para notificaciones importantes</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
-                {{ form.first_name }}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
-                {{ form.last_name }}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
-                {{ form.username }}
-                <div class="help-text">Mínimo 5 caracteres, sin espacios</div>
-            </div>
-            
-            <div class="section-title">🔒 Seguridad</div>
-            
-            <div class="form-group">
-                <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
-                {{ form.password1 }}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
-                {{ form.password2 }}
-            </div>
-            
-            <div class="section-title">📝 Información adicional <span class="optional-label">(opcional)</span></div>
-            
-            <div class="form-group">
-                <label for="{{ form.numero_celular.id_for_label }}">
-                    {{ form.numero_celular.label }} <span class="optional-label">(opcional)</span>
-                </label>
-                {{ form.numero_celular }}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.biografia.id_for_label }}">
-                    {{ form.biografia.label }} <span class="optional-label">(opcional)</span>
-                </label>
-                {{ form.biografia }}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.foto.id_for_label }}">
-                    {{ form.foto.label }} <span class="optional-label">(opcional)</span>
-                </label>
-                {{ form.foto }}
-                {% if form.foto.help_text %}
-                <div class="help-text">{{ form.foto.help_text }}</div>
-                {% endif %}
-            </div>
-            
-            <button type="submit">✅ Crear Cuenta</button>
-        </form>
-        
-        <div class="login-link">
-            ¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a>
+            {% endfor %}
         </div>
+        {% else %}
+        <div class="no-eventos">
+            <h2>No se encontraron eventos</h2>
+            <p>Intenta ajustar los filtros de búsqueda</p>
+        </div>
+        {% endif %}
     </main>
+    
+    <script>
+        function toggleFilters() {
+            const panel = document.getElementById('filtersPanel');
+            const icon = document.getElementById('filterIcon');
+            
+            panel.classList.toggle('active');
+            icon.textContent = panel.classList.contains('active') ? '▲' : '▼';
+        }
+        
+        function limpiarFiltros() {
+            window.location.href = "{% url 'lista_eventos' %}";
+        }
+        
+        function removeFilter(filterName) {
+            const form = document.getElementById('filterForm');
+            const input = form.querySelector(`[name="${filterName}"]`);
+            
+            if (input) {
+                if (input.type === 'checkbox') {
+                    input.checked = false;
+                } else {
+                    input.value = '';
+                }
+            }
+            
+            form.submit();
+        }
+    </script>
 </body>
 </html>
-
-
-
-
-
-
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegistroForm, EventoForm
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.models import User
-from django.contrib import messages
-from django.db.models import Q, Count
-from .models import PerfilUsuario, Evento, Inscripcion, Categoria

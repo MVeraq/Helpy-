@@ -37,19 +37,42 @@ class PerfilUsuario(models.Model):
 
 
 class Evento(models.Model):
+    REGIONES = [
+        ('tarapaca', 'Tarapacá'),
+        ('antofagasta', 'Antofagasta'),
+        ('atacama', 'Atacama'),
+        ('coquimbo', 'Coquimbo'),
+        ('valparaiso', 'Valparaíso'),
+        ('ohiggins', "O'Higgins"),
+        ('maule', 'Maule'),
+        ('nuble', 'Ñuble'),
+        ('biobio', 'Biobío'),
+        ('araucania', 'La Araucanía'),
+        ('los_rios', 'Los Ríos'),
+        ('los_lagos', 'Los Lagos'),
+        ('aysen', 'Aysén'),
+        ('magallanes', 'Magallanes'),
+        ('metropolitana', 'Metropolitana'),
+        ('arica', 'Arica y Parinacota'),
+    ]
+    
     creador = models.ForeignKey(User, on_delete=models.CASCADE, related_name='eventos')
     nombre = models.CharField(max_length=200)
+    imagen = models.ImageField(upload_to='eventos/', blank=True, null=True)  # NUEVO
     fecha = models.DateField()
     hora = models.TimeField()
+    
+    # Ubicación detallada
     ubicacion = models.CharField(max_length=300)
+    ciudad = models.CharField(max_length=100, blank=True, null=True)  # NUEVO
+    region = models.CharField(max_length=50, choices=REGIONES, blank=True, null=True)  # NUEVO
     latitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    
     descripcion = models.TextField()
     detalles = models.TextField(blank=True, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
-    imagen = models.ImageField(upload_to='eventos/', blank=True, null=True)
     
-   
     categorias = models.ManyToManyField(Categoria, related_name='eventos')
     
     class Meta:
@@ -59,7 +82,6 @@ class Evento(models.Model):
     
     def __str__(self):
         return f"{self.nombre} - {self.fecha}"
-
 
 class Inscripcion(models.Model):
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name='inscripciones')
