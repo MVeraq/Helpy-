@@ -4,15 +4,24 @@
 {% block page_name %}Bienvenida a Humanet{% endblock %}
 
 {% block extra_nav %}
-  {% if user.is_authenticated %}
-      <a href="{% url 'perfil' %}">Perfil</a>
-    {% else %}
-      <a href="{% url 'login' %}">Únete</a>
-    
+    <div class="interfaz">
+        <div class="logo">
+            <span>C:</span>
+            <span>Helpy</span>
+            </div>
+        <div>
+            <ul class= "links">
+                <li><a href= "/">Inicio</a></li>      
+                <li><a href="/eventos/">Eventos</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'perfil' %}">Perfil</a></li>
+                {% else %}
+                    <li><a href="{% url 'registro' %}">Únete</a></li>
+                </ul>   
+            </div>
+        </div>
   {% endif %}
-  
-  <a href="/eventos/">Eventos</a>
-  <a href="/objetivos/">Objetivo</a>
+
 {% endblock %}
 
 {% block content %}

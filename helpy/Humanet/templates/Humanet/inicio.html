@@ -65,7 +65,7 @@
     }
 
     .nav-container {
-        max-width: 1200px;
+        max-width: 1900px;
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
@@ -89,7 +89,7 @@
 
     .nav-links {
         display: flex;
-        gap: 30px;
+        gap: 60px 40px;
         list-style: none;
     }
 
@@ -425,8 +425,8 @@
             <span>HELPY</span>
         </div>
             <ul class="nav-links">
-                <li><a href="{% url 'lista_eventos' %}">EVENTOS</a></li>
                 <li><a href="{% url 'sobre_nosotros' %}">OBJETIVOS</a></li>
+                <li><a href="{% url 'lista_eventos' %}">EVENTOS</a></li>  
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'perfil' %}">PERFIL</a></li>
                 {% else %}
