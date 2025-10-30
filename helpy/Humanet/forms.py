@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 import re
-from .models import PerfilUsuario, Evento
+from .models import PerfilUsuario, Evento, Categoria
 
 class RegistroForm(UserCreationForm):
     username = forms.CharField(label='Nombre de usuario')
@@ -13,7 +13,7 @@ class RegistroForm(UserCreationForm):
     password1 = forms.CharField(label='Contraseña', widget=forms.PasswordInput, help_text=_("Debe tener al menos 8 caracteres."))
     password2 = forms.CharField(label='Confirmar contraseña', widget=forms.PasswordInput, help_text=_("Ingrese la misma contraseña para verificación."))
 
-    numero_celular = forms.CharField(label='Número celular', max_length=9)
+    numero_celular = forms.CharField(label='Número celular', max_length=12, required=False)
     biografia = forms.CharField(label='Biografía', widget=forms.Textarea(attrs={'rows': 4, 'placeholder': 'Cuéntanos un poco sobre ti o tu organización...'}), required=True)
     foto = forms.ImageField(label='Foto de perfil', required=False) 
     tipo_cuenta = forms.ChoiceField(choices=[('individuo', 'Soy un individuo'), ('organizacion', 'Represento una organización')],
@@ -95,4 +95,49 @@ class EventoForm(forms.ModelForm):
             'descripcion': 'Descripción',
             'detalles': 'Detalles adicionales',
             'imagen': 'Imagen del evento',
+        }
+
+class EventoForm(forms.ModelForm):
+    fecha = forms.DateField(
+        widget=forms.DateInput(attrs={
+            'type': 'date',
+            'class': 'form-control'
+        }),
+        label='Fecha del evento'
+    )
+    
+    hora = forms.TimeField(
+        widget=forms.TimeInput(attrs={
+            'type': 'time',
+            'class': 'form-control'
+        }),
+        label='Hora del evento'
+    )
+    
+    # NUEVO: Campo de categorías
+    categorias = forms.ModelMultipleChoiceField(
+        queryset=Categoria.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        label='Categorías del evento',
+        help_text='Selecciona al menos una categoría',
+        required=True
+    )
+    
+    class Meta:
+        model = Evento
+        fields = ['nombre', 'fecha', 'hora', 'ubicacion', 'latitud', 'longitud', 
+                  'descripcion', 'detalles', 'categorias']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Jornada de limpieza comunitaria'}),
+            'ubicacion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Plaza principal, Villa Alemana'}),
+            'latitud': forms.HiddenInput(),
+            'longitud': forms.HiddenInput(),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describe brevemente el evento...'}),
+            'detalles': forms.Textarea(attrs={'class': 'form-control', 'rows': 6, 'placeholder': 'Información adicional, materiales necesarios, etc.'}),
+        }
+        labels = {
+            'nombre': 'Nombre del evento',
+            'ubicacion': 'Ubicación',
+            'descripcion': 'Descripción',
+            'detalles': 'Detalles adicionales',
         }

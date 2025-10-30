@@ -6,7 +6,18 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         categorias = [
-            {'nombre': '', 'icono': '', 'color': , 'descripcion': ''},
+            {'nombre': 'Ayuda comunitaria', 'icono': '🤝', 'color':"#444D6B", 'descripcion': 'Mejoramiento de espacios públicos, Eventos solidarios, trueques comunitarios'},
+            {'nombre': 'Asistencia alimentaria', 'icono': '🍽️', 'color':"#9CBAE0", 'descripcion': ''},
+            {'nombre': 'Salud y bienestar', 'icono': '⛑️', 'color':"#9CBAE0", 'descripcion': ''},
+            {'nombre': 'Educación y capacitación', 'icono': '📚', 'color':"#9CBAE0", 'descripcion': ''},
+            {'nombre': 'Donaciones y colectas', 'icono': '❤️', 'color':"#9CBAE0", 'descripcion': ''},
+            {'nombre': 'Ayuda a grupos vulnerables', 'icono': '👵', 'color':"#9CBAE0", 'descripcion': ''},
+            {'nombre': 'Protección animal', 'icono': '🐶', 'color':"#9CBAE0", 'descripcion': ''},
+            {'nombre': 'Medio ambiente', 'icono': '🌱', 'color':"#9CBAE0", 'descripcion': ''},
+            {'nombre': 'Actividades recreativas', 'icono': '🎨', 'color':"#9CBAE0", 'descripcion': ''},
+            {'nombre': 'Trabajo en terreno', 'icono': '🥾', 'color':"#9CBAE0", 'descripcion': ''},
+        ]
+            
         
         for cat_data in categorias:
             categoria, created = Categoria.objects.get_or_create(

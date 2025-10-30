@@ -201,15 +201,34 @@
                 {{ form.detalles }}
             </div>
             
+
+
+<!-- NUEVA SECCIÓN DE CATEGORÍAS -->
+<div class="form-group">
+    <label style="display: block; margin-bottom: 15px; font-size: 18px; font-weight: bold;">
+        🏷️ {{ form.categorias.label }}
+    </label>
+    <p style="font-size: 14px; color: #666; margin-bottom: 15px;">
+        {{ form.categorias.help_text }}
+    </p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+        {% for checkbox in form.categorias %}
+        <label style="display: flex; align-items: center; padding: 12px; background: #f8f9fa; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s;"
+               onmouseover="this.style.borderColor='#667eea'"
+               onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='transparent'">
+            {{ checkbox.tag }}
+            <span style="margin-left: 10px;">{{ checkbox.choice_label }}</span>
+        </label>
+        {% endfor %}
+    </div>
+</div>
+
 <div class="form-group" style="background: #e8f4f8; padding: 15px; border-radius: 4px;">
     <strong>📝 Nota:</strong> Este evento será creado por <strong>{{ user.username }}</strong>
 </div>
 
+<button type="submit">✅ Crear Evento</button>
 
-            
-            <button type="submit">✅ Crear Evento</button>
-        </form>
-    </main>
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>

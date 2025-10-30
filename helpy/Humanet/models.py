@@ -47,8 +47,9 @@ class Evento(models.Model):
     descripcion = models.TextField()
     detalles = models.TextField(blank=True, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+    imagen = models.ImageField(upload_to='eventos/', blank=True, null=True)
     
-    # NUEVO: Categorías del evento
+   
     categorias = models.ManyToManyField(Categoria, related_name='eventos')
     
     class Meta:
