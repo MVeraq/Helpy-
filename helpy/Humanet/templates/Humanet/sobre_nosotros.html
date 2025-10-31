@@ -3,65 +3,296 @@
 {% block title %}Inicio{% endblock %}
 {% block page_name %}Bienvenida a Humanet{% endblock %}
 
-{% block extra_nav %}
-    <div class="interfaz">
-        <div class="logo">
-            <span>C:</span>
-            <span>Helpy</span>
-            </div>
-        <div>
-            <ul class= "links">
-                <li><a href= "/">Inicio</a></li>      
-                <li><a href="/eventos/">Eventos</a></li>
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'perfil' %}">Perfil</a></li>
-                {% else %}
-                    <li><a href="{% url 'registro' %}">Únete</a></li>
-                </ul>   
-            </div>
-        </div>
-  {% endif %}
+{% load static %}
 
-{% endblock %}
+{%block extra_nav %}
+<header class="header">
+    <div class="nav-container">
+        <div class="logo">
+            <span class="logo-icon">c:</span>
+            <span>HELPY</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'inicio' %}">INICIO</a></li>
+            <li><a href="{% url 'lista_eventos' %}">EVENTOS</a></li>  
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'perfil' %}">PERFIL</a></li>
+            {% else %}
+                <li><a href="#" id="openLoginBtn" style="cursor: pointer;">ÚNETE</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</header>
+
+<!-- Modal -->
+<div id="loginModal" class="modal-overlay">
+    <div class="modal-content">
+        <span id="closeLoginBtn" class="close-btn">&times;</span>
+        <h2 style="text-align: center; margin-bottom: 30px; color: #2c5f5f;">Iniciar Sesión</h2>
+        
+        <form method="post" action="{% url 'inicio' %}">
+            {% csrf_token %}
+            
+            <div style="margin-bottom: 20px;">
+                <label for="id_username" style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Usuario:</label>
+                <input type="text" name="username" id="id_username" required 
+                       style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="id_password" style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Contraseña:</label>
+                <input type="password" name="password" id="id_password" required
+                       style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+            </div>
+
+            <button type="submit" style="width: 100%; padding: 12px; background: #2c5f5f; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; transition: background 0.3s;">
+                Iniciar Sesión
+            </button>
+        </form>
+
+        <p style="text-align: center; margin-top: 20px; color: #666;">
+            ¿No tienes cuenta? <a href="{% url 'registro' %}" style="color: #2c5f5f; font-weight: bold; text-decoration: none;">Regístrate aquí</a>
+        </p>
+    </div>
+</div>
+{%endblock%}
 
 {% block content %}
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Helpy - Sobre Nosotros</title>
-    </head>
-    <body>
-        <header>
-            <h1>Sobre Nosotros</h1>
-            
-        </header>
-        
-        <main>
-            <section>
-                <h2>¿Quiénes somos?</h2>
-                <p>Somos un equipo dedicado a proporcionar las mejores soluciones para nuestros usuarios.</p>
-            </section>
-            
-            <section>
-                <h2>Nuestra Misión</h2>
-                <p>Hacer que la tecnología sea accesible para todos, brindando herramientas simples y efectivas.</p>
-            </section>
-            
-            <section>
-                <h2>Nuestro Equipo</h2>
-                <ul>
-                    <li>Desarrolladores apasionados</li>
-                    <li>Diseñadores creativos</li>
-                    <li>Soporte técnico 24/7</li>
-                </ul>
-            </section>
-        </main>
-        
-        <footer>
-            <p>&copy; 2025 Helpy. Todos los derechos reservados.</p>
-        </footer>
-    </body>
-    </html>
+<!-- ESTILOS INLINE - Esto siempre funcionará -->
+<style>
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        padding-top: 80px;
+        background-color: #f5f5f5;
+    }
+
+    .header {
+        background: #2c5f5f;
+        padding: 15px 0;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .nav-container {
+        max-width: 1900px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        text-transform: uppercase;
+    }
+
+    .logo-icon {
+        font-size: 24px;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+    }
+
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        text-transform: uppercase;
+        transition: color 0.3s;
+        padding: 10px 15px;
+    }
+
+    .nav-links a:hover {
+        color: #a8e6cf;
+        background-color: rgba(255,255,255,0.1);
+        border-radius: 5px;
+    }
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 400px;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+    }
+
+    .close-btn:hover {
+        color: #000;
+    }
+
+    .main-content {
+        padding: 40px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .content-section {
+        margin-bottom: 40px;
+        padding: 30px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border-left: 4px solid #2c5f5f;
+    }
+
+    h1 {
+        color: #2c5f5f;
+        margin-bottom: 30px;
+        text-align: center;
+        font-size: 2.5em;
+    }
+
+    h2 {
+        color: #2c5f5f;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+        border-bottom: 2px solid #a8e6cf;
+        padding-bottom: 10px;
+    }
+
+    p {
+        color: #333;
+        line-height: 1.8;
+        margin-bottom: 15px;
+        font-size: 1.1em;
+    }
+
+    ul {
+        list-style-type: none;
+        padding-left: 20px;
+    }
+
+    li {
+        color: #333;
+        margin-bottom: 10px;
+        padding-left: 25px;
+        position: relative;
+        font-size: 1.1em;
+    }
+
+    li:before {
+        content: "✓";
+        color: #2c5f5f;
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+    }
+
+    footer {
+        text-align: center;
+        padding: 30px;
+        background: #2c5f5f;
+        color: white;
+        margin-top: 60px;
+    }
+</style>
+
+<div class="main-content">
+    <section class="content-section">
+        <h1>Sobre Nosotros</h1>
+    </section>
+    
+    <section class="content-section">
+        <h2>¿Quiénes somos?</h2>
+        <p>Somos un equipo dedicado a proporcionar las mejores soluciones para nuestros usuarios.</p>
+    </section>
+    
+    <section class="content-section">
+        <h2>Nuestra Misión</h2>
+        <p>Hacer que la tecnología sea accesible para todos, brindando herramientas simples y efectivas.</p>
+    </section>
+    
+    <section class="content-section">
+        <h2>Nuestro Equipo</h2>
+        <ul>
+            <li>Desarrolladores apasionados</li>
+            <li>Diseñadores creativos</li>
+            <li>Soporte técnico 24/7</li>
+        </ul>
+    </section>
+</div>
+
+<footer>
+    <p>&copy; 2025 Helpy. Todos los derechos reservados.</p>
+</footer>
+
+<script>
+    const openBtn = document.getElementById('openLoginBtn');
+    const closeBtn = document.getElementById('closeLoginBtn');
+    const modal = document.getElementById('loginModal');
+
+    if (openBtn) {
+        openBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.style.display = 'flex';
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    {% if show_login_error %}
+        modal.style.display = 'flex';
+    {% endif %}
+</script>
 {% endblock %}

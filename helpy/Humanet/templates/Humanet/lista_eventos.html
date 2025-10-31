@@ -10,7 +10,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
@@ -18,7 +18,7 @@
             background: linear-gradient(135deg, #a8e6cf 0%, #f0f8f5 100%);
             min-height: 100vh;
         }
-        
+
         header {
             background: #2c5f5f;
             color: #fff;
@@ -27,32 +27,32 @@
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(44, 95, 95, 0.3);
         }
-        
+
         header h1 {
             margin-bottom: 10px;
         }
-        
+
         nav ul {
             list-style: none;
             display: flex;
             gap: 20px;
         }
-        
+
         nav a {
             color: #fff;
             text-decoration: none;
         }
-        
+
         nav a:hover {
             color: #a8e6cf;
-            text-decoration: none;
         }
-        
+
         main {
             max-width: 1200px;
             margin: 0 auto;
         }
-        
+
+        /* Botón crear evento */
         .crear-btn {
             display: inline-block;
             background: #2c5f5f;
@@ -65,39 +65,155 @@
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(44, 95, 95, 0.3);
         }
-        
+
         .crear-btn:hover {
             background: #1e4a4a;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(44, 95, 95, 0.4);
         }
-        
-        .login-message {
-            background: linear-gradient(135deg, #a8e6cf 0%, #d4f1e8 100%);
-            color: #2c5f5f;
-            padding: 20px;
-            border-radius: 10px;
+
+        /* Barra de búsqueda y filtros */
+        .search-filter-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(44, 95, 95, 0.15);
             margin-bottom: 30px;
-            border-left: 4px solid #2c5f5f;
-            box-shadow: 0 4px 15px rgba(44, 95, 95, 0.2);
         }
-        
-        .login-message a {
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input[type="text"] {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #a8e6cf;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .search-box button {
+            padding: 12px 30px;
+            background: #2c5f5f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-box button:hover {
+            background: #1e4a4a;
+        }
+
+        .filter-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
             color: #2c5f5f;
             font-weight: bold;
-            text-decoration: none;
+            margin-bottom: 15px;
         }
-        
-        .login-message a:hover {
-            text-decoration: underline;
+
+        .filters-panel {
+            display: none;
+            padding-top: 20px;
+            border-top: 2px solid #d4f1e8;
         }
-        
+
+        .filters-panel.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-group {
+            background: #f0f8f5;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .filter-group h4 {
+            margin-bottom: 10px;
+            color: #2c5f5f;
+        }
+
+        .filter-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-aplicar {
+            flex: 1;
+            padding: 10px;
+            background: #2c5f5f;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-limpiar {
+            flex: 1;
+            padding: 10px;
+            background: #a8e6cf;
+            color: #2c5f5f;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Filtros activos */
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: #d4f1e8;
+            color: #2c5f5f;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .filter-chip button {
+            background: none;
+            border: none;
+            color: #2c5f5f;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 0;
+        }
+
+        /* Tarjetas de eventos */
         .eventos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 20px;
         }
-        
+
         .evento-card {
             background: white;
             padding: 25px;
@@ -106,27 +222,27 @@
             transition: all 0.3s;
             border-left: 4px solid #2c5f5f;
         }
-        
+
         .evento-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 40px rgba(44, 95, 95, 0.25);
         }
-        
+
         .evento-card h3 {
             color: #2c5f5f;
             margin-bottom: 15px;
             font-size: 1.3rem;
         }
-        
+
         .evento-info {
-            margin: 12px 0;
+            margin: 10px 0;
             color: #666;
         }
-        
+
         .evento-info strong {
             color: #2c5f5f;
         }
-        
+
         .ver-mas {
             display: inline-block;
             margin-top: 20px;
@@ -138,13 +254,13 @@
             border-radius: 20px;
             transition: all 0.3s;
         }
-        
+
         .ver-mas:hover {
             background: #2c5f5f;
             color: white;
             transform: translateX(5px);
         }
-        
+
         .no-eventos {
             text-align: center;
             padding: 60px;
@@ -152,28 +268,6 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(44, 95, 95, 0.15);
             color: #2c5f5f;
-        }
-        
-        .no-eventos h2 {
-            color: #2c5f5f;
-            margin-bottom: 15px;
-        }
-        
-        .no-eventos a {
-            color: #2c5f5f;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 10px 20px;
-            background: #a8e6cf;
-            border-radius: 20px;
-            display: inline-block;
-            margin-top: 15px;
-            transition: all 0.3s;
-        }
-        
-        .no-eventos a:hover {
-            background: #2c5f5f;
-            color: white;
         }
     </style>
 </head>
@@ -185,7 +279,7 @@
                 <li><a href="/">Inicio</a></li>
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'perfil' %}">Mi Perfil</a></li>
-                    
+                    <li><a href="{% url 'logout' %}">Cerrar Sesión</a></li>
                 {% else %}
                     <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
                     <li><a href="{% url 'registro' %}">Registrarse</a></li>
@@ -193,54 +287,130 @@
             </ul>
         </nav>
     </header>
-    
+
     <main>
         {% if user.is_authenticated %}
             <a href="{% url 'crear_evento' %}" class="crear-btn">+ Crear Nuevo Evento</a>
-        {% else %}
-            <div class="login-message">
-                💡 <strong>¿Quieres organizar un evento?</strong> 
-                <a href="{% url 'login' %}">Inicia sesión</a> o 
-                <a href="{% url 'registro' %}">regístrate</a> para crear eventos de ayuda comunitaria.
-            </div>
         {% endif %}
-        
+
+        <!-- Barra de búsqueda y filtros -->
+        <div class="search-filter-container">
+            <form method="get" id="filterForm">
+                <div class="search-box">
+                    <input type="text" name="busqueda" placeholder="🔍 Buscar eventos por nombre, descripción, ciudad..." value="{{ busqueda }}">
+                    <button type="submit">Buscar</button>
+                </div>
+
+                <div class="filter-toggle" onclick="toggleFilters()">
+                    <span id="filterIcon">▼</span>
+                    <span>Filtros Avanzados</span>
+                </div>
+
+                <div class="filters-panel" id="filtersPanel">
+                    <!-- Categorías -->
+                    <div class="filter-group">
+                        <h4>🏷️ Categorías</h4>
+                        {% for categoria in todas_categorias %}
+                        <label>
+                            <input type="checkbox" name="categorias" value="{{ categoria.id }}" {% if categoria.id|stringformat:"s" in categorias_filtro %}checked{% endif %}>
+                            {{ categoria.icono }} {{ categoria.nombre }}
+                        </label>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Región -->
+                    <div class="filter-group">
+                        <h4>📍 Región</h4>
+                        <select name="region">
+                            <option value="">Todas las regiones</option>
+                            {% for value, label in regiones %}
+                            <option value="{{ value }}" {% if region_filtro == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Fecha -->
+                    <div class="filter-group">
+                        <h4>📅 Rango de Fechas</h4>
+                        <label>Desde:</label>
+                        <input type="date" name="fecha_desde" value="{{ fecha_desde }}">
+                        <label>Hasta:</label>
+                        <input type="date" name="fecha_hasta" value="{{ fecha_hasta }}">
+                    </div>
+
+                    <div class="filter-actions">
+                        <button type="submit" class="btn-aplicar">✓ Aplicar Filtros</button>
+                        <button type="button" class="btn-limpiar" onclick="limpiarFiltros()">✗ Limpiar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Filtros activos -->
+        {% if busqueda or categorias_filtro or region_filtro or fecha_desde or fecha_hasta %}
+        <div class="active-filters">
+            <strong>Filtros activos:</strong>
+            {% if busqueda %}
+            <span class="filter-chip">Búsqueda: "{{ busqueda }}" <button onclick="removeFilter('busqueda')">✕</button></span>
+            {% endif %}
+            {% if region_filtro %}
+            <span class="filter-chip">Región: {{ region_filtro }} <button onclick="removeFilter('region')">✕</button></span>
+            {% endif %}
+            {% if fecha_desde %}
+            <span class="filter-chip">Desde: {{ fecha_desde }} <button onclick="removeFilter('fecha_desde')">✕</button></span>
+            {% endif %}
+            {% if fecha_hasta %}
+            <span class="filter-chip">Hasta: {{ fecha_hasta }} <button onclick="removeFilter('fecha_hasta')">✕</button></span>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Grid de eventos -->
         {% if eventos %}
         <div class="eventos-grid">
             {% for evento in eventos %}
             <div class="evento-card">
                 <h3>{{ evento.nombre }}</h3>
-                <div class="evento-info">
-                    <strong>📅 Fecha:</strong> {{ evento.fecha|date:"d/m/Y" }}
+                <div class="evento-info"><strong>📅 Fecha:</strong> {{ evento.fecha|date:"d/m/Y" }}</div>
+                <div class="evento-info"><strong>🕐 Hora:</strong> {{ evento.hora|time:"H:i" }}</div>
+                <div class="evento-info"><strong>📍 Lugar:</strong> {{ evento.ubicacion|truncatewords:10 }}</div>
+                <div class="evento-info"><strong>👤 Creado por:</strong> 
+                    <a href="{% url 'perfil_publico' evento.creador.username %}" style="color:#2c5f5f;">{{ evento.creador }}</a>
                 </div>
-                <div class="evento-info">
-                    <strong>🕐 Hora:</strong> {{ evento.hora|time:"H:i" }}
-                </div>
-                <div class="evento-info">
-                    <strong>📍 Lugar:</strong> {{ evento.ubicacion|truncatewords:10 }}
-                </div>
-               <div class="evento-info">
-                    <strong>👤 Creado por:</strong> 
-                    <a href="{% url 'perfil_publico' evento.creador.username %}" style="color: #2c5f5f; text-decoration: none;">
-                        {{ evento.creador }}
-                    </a>
-                </div>
-                <div class="evento-info">
-                    {{ evento.descripcion|truncatewords:20 }}
-                </div>
+                <p>{{ evento.descripcion|truncatewords:20 }}</p>
                 <a href="{% url 'detalle_evento' evento.id %}" class="ver-mas">Ver más detalles →</a>
             </div>
             {% endfor %}
         </div>
         {% else %}
         <div class="no-eventos">
-            <h2>No hay eventos aún</h2>
-            <p>Sé el primero en crear un evento de ayuda comunitaria</p>
-            {% if not user.is_authenticated %}
-                <p><a href="{% url 'registro' %}">Regístrate aquí</a></p>
-            {% endif %}
+            <h2>No se encontraron eventos</h2>
+            <p>Intenta ajustar los filtros de búsqueda</p>
         </div>
         {% endif %}
     </main>
+
+    <script>
+        function toggleFilters() {
+            const panel = document.getElementById('filtersPanel');
+            const icon = document.getElementById('filterIcon');
+            panel.classList.toggle('active');
+            icon.textContent = panel.classList.contains('active') ? '▲' : '▼';
+        }
+
+        function limpiarFiltros() {
+            window.location.href = "{% url 'lista_eventos' %}";
+        }
+
+        function removeFilter(filterName) {
+            const form = document.getElementById('filterForm');
+            const input = form.querySelector(`[name="${filterName}"]`);
+            if (input) {
+                if (input.type === 'checkbox') input.checked = false;
+                else input.value = '';
+            }
+            form.submit();
+        }
+    </script>
 </body>
 </html>

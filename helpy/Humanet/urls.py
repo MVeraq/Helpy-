@@ -5,6 +5,13 @@ from . import views
 
 urlpatterns = [
     path('', views.inicio, name='inicio'),
+    path('sobre-nosotros/', views.sobre_nosotros, name='sobre_nosotros.html'),
+    path('registro/', views.registro, name='registro'),
+    path('preferencias/', views.seleccionar_preferencias, name='seleccionar_preferencias'),  # NUEVA
+    path('perfil/', views.perfil, name='perfil'),
+
+
+    path('', views.inicio, name='inicio'),
     path('sobre-nosotros/', views.sobre_nosotros, name='sobre_nosotros'),
     path('registro/', views.registro, name='registro'),
     path('login/', auth_views.LoginView.as_view(template_name='Humanet/login.html'), name='login'),

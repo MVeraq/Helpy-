@@ -228,9 +228,37 @@
         </nav>
     </header>
     
-    <main>
+        <main>
+            <div class="evento-header">
+                <main>
+        <!-- NUEVA SECCIÓN DE IMAGEN -->
+        {% if evento.imagen %}
+        <div style="margin-bottom: 30px;">
+            <img src="{{ evento.imagen.url }}" 
+                alt="{{ evento.nombre }}" 
+                style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px;">
+        </div>
+        {% endif %}
+        
         <div class="evento-header">
-            <h2>{{ evento.nombre }}</h2>
+            <h2>{{ evento.nombre }}</h2>            
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0;">
+                {% for categoria in evento.categorias.all %}
+                <span style="padding: 6px 15px; 
+                            background: {{ categoria.color }}; 
+                            color: white; 
+                            border-radius: 20px; 
+                            font-size: 14px; 
+                            font-weight: bold;">
+                    {{ categoria.icono }} {{ categoria.nombre }}
+                </span>
+                {% endfor %}
+            </div>
+            
+            <p style="color: #666;">
+                Creado por: 
+                
             <p style="color: #666;">
                 Creado por: 
                 <a href="{% url 'perfil_publico' evento.creador.username %}" style="color: #007bff; font-weight: bold;">
@@ -240,15 +268,31 @@
        </div>
 
         
-        <div class="evento-meta">
-            <div class="meta-item">
-                <strong>📅 Fecha</strong>
-                <span>{{ evento.fecha|date:"l, d \d\e F \d\e Y" }}</span>
-            </div>
-            <div class="meta-item">
-                <strong>🕐 Hora</strong>
-                <span>{{ evento.hora|time:"H:i" }} hrs</span>
-            </div>
+       <div class="evento-meta">
+    <div class="meta-item">
+        <strong>📅 Fecha</strong>
+        <span>{{ evento.fecha|date:"l, d de F de Y" }}</span>
+    </div>
+    <div class="meta-item">
+        <strong>🕐 Hora</strong>
+        <span>{{ evento.hora|time:"H:i" }} hrs</span>
+    </div>
+    
+    <!-- NUEVOS META ITEMS -->
+    {% if evento.region %}
+    <div class="meta-item">
+        <strong>🗺️ Región</strong>
+        <span>{{ evento.get_region_display }}</span>
+    </div>
+    {% endif %}
+    
+    {% if evento.ciudad %}
+    <div class="meta-item">
+        <strong>🏙️ Ciudad</strong>
+        <span>{{ evento.ciudad }}</span>
+    </div>
+    {% endif %}
+    </div>
         
         </div>
         

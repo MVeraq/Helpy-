@@ -169,6 +169,34 @@
                 <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
                 {{ form.nombre }}
             </div>
+
+            <!-- NUEVA SECCIÓN DE IMAGEN -->
+            <div class="form-group">
+                <label for="{{ form.imagen.id_for_label }}">
+                    📸 {{ form.imagen.label }}
+                </label>
+                {{ form.imagen }}
+                {% if form.imagen.help_text %}
+                <div class="help-text">{{ form.imagen.help_text }}</div>
+                {% endif %}
+                <div id="imagePreview" style="margin-top: 15px; display: none;">
+                    <img id="previewImg" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid #ddd;">
+                </div>
+            </div>
+
+            <script>
+            document.getElementById('id_imagen').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('previewImg').src = e.target.result;
+                        document.getElementById('imagePreview').style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+            </script>
             
             <div class="form-group">
                 <label for="{{ form.fecha.id_for_label }}">{{ form.fecha.label }}</label>
@@ -179,6 +207,22 @@
                 <label for="{{ form.hora.id_for_label }}">{{ form.hora.label }}</label>
                 {{ form.hora }}
             </div>
+
+            <!-- NUEVOS CAMPOS DE UBICACIÓN -->
+            <div class="form-group">
+                <label for="{{ form.region.id_for_label }}">{{ form.region.label }}</label>
+                {{ form.region }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.ciudad.id_for_label }}">{{ form.ciudad.label }}</label>
+                {{ form.ciudad }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.ubicacion.id_for_label }}">{{ form.ubicacion.label }}</label>
+                {{ form.ubicacion }}
+    ...
             
             <div class="form-group">
                 <label for="{{ form.ubicacion.id_for_label }}">{{ form.ubicacion.label }}</label>
@@ -201,15 +245,34 @@
                 {{ form.detalles }}
             </div>
             
+
+
+<!-- NUEVA SECCIÓN DE CATEGORÍAS -->
+<div class="form-group">
+    <label style="display: block; margin-bottom: 15px; font-size: 18px; font-weight: bold;">
+        🏷️ {{ form.categorias.label }}
+    </label>
+    <p style="font-size: 14px; color: #666; margin-bottom: 15px;">
+        {{ form.categorias.help_text }}
+    </p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+        {% for checkbox in form.categorias %}
+        <label style="display: flex; align-items: center; padding: 12px; background: #f8f9fa; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s;"
+               onmouseover="this.style.borderColor='#667eea'"
+               onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='transparent'">
+            {{ checkbox.tag }}
+            <span style="margin-left: 10px;">{{ checkbox.choice_label }}</span>
+        </label>
+        {% endfor %}
+    </div>
+</div>
+
 <div class="form-group" style="background: #e8f4f8; padding: 15px; border-radius: 4px;">
     <strong>📝 Nota:</strong> Este evento será creado por <strong>{{ user.username }}</strong>
 </div>
 
+<button type="submit">✅ Crear Evento</button>
 
-            
-            <button type="submit">✅ Crear Evento</button>
-        </form>
-    </main>
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>

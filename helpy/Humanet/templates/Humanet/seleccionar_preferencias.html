@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selecciona tus Intereses - Helpy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .selection-count {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        
+        .categorias-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .categoria-card {
+            background: #f8f9fa;
+            border: 3px solid transparent;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .categoria-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .categoria-card.selected {
+            border-color: currentColor;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            transform: scale(1.05);
+        }
+        
+        .categoria-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background: currentColor;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .categoria-icono {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .categoria-nombre {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .categoria-descripcion {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-skip {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-skip:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>¡Bienvenido, {{ user.first_name }}! 👋</h1>
+            <p>Selecciona al menos 3 categorías que te interesen para personalizar tu experiencia</p>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+        
+        <div class="selection-count">
+            <span id="selectionCount">0</span> / 3 categorías mínimas seleccionadas
+        </div>
+        
+        <form method="post" id="preferencesForm">
+            {% csrf_token %}
+            
+            <div class="categorias-grid">
+                {% for categoria in categorias %}
+                <div class="categoria-card" 
+                     data-categoria-id="{{ categoria.id }}"
+                     style="color: {{ categoria.color }};"
+                     onclick="toggleCategoria(this, {{ categoria.id }})">
+                    <div class="categoria-icono">{{ categoria.icono }}</div>
+                    <div class="categoria-nombre">{{ categoria.nombre }}</div>
+                    <div class="categoria-descripcion">{{ categoria.descripcion }}</div>
+                    <input type="checkbox" 
+                           name="categorias" 
+                           value="{{ categoria.id }}" 
+                           style="display: none;">
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="actions">
+                <button type="button" class="btn btn-skip" onclick="omitirPreferencias()">
+                    Omitir por ahora
+                </button>
+                <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                    Continuar →
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        let selectedCount = 0;
+        const minSelection = 3;
+        
+        function toggleCategoria(card, categoriaId) {
+            const checkbox = card.querySelector('input[type="checkbox"]');
+            const isSelected = card.classList.contains('selected');
+            
+            if (isSelected) {
+                card.classList.remove('selected');
+                checkbox.checked = false;
+                selectedCount--;
+            } else {
+                card.classList.add('selected');
+                checkbox.checked = true;
+                selectedCount++;
+            }
+            
+            updateUI();
+        }
+        
+        function updateUI() {
+            document.getElementById('selectionCount').textContent = selectedCount;
+            
+            // Actualizar barra de progreso
+            const progress = Math.min((selectedCount / minSelection) * 100, 100);
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Habilitar/deshabilitar botón
+            const submitBtn = document.getElementById('submitBtn');
+            if (selectedCount >= minSelection) {
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
+            }
+        }
+        
+        function omitirPreferencias() {
+            if (confirm('¿Estás seguro? Podrás configurar tus preferencias más tarde desde tu perfil.')) {
+                window.location.href = "{% url 'inicio' %}";
+            }
+        }
+        
+        // Prevenir submit si no hay suficientes categorías
+        document.getElementById('preferencesForm').addEventListener('submit', function(e) {
+            if (selectedCount < minSelection) {
+                e.preventDefault();
+                alert('Por favor selecciona al menos ' + minSelection + ' categorías.');
+            }
+        });
+    </script>
+</body>
+</html>

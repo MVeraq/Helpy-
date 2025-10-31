@@ -1,12 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegistroForm, EventoForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, authenticate, logout
-from .models import PerfilUsuario, Evento, User, Inscripcion  
-from django.shortcuts import get_object_or_404
+from django.contrib.auth import login, authenticate, logout 
+from django.contrib.auth.models import User
 from django.contrib import messages
+from django.db.models import Q, Count
+from .models import PerfilUsuario, Evento, Inscripcion, Categoria
 
 def inicio(request):
+    # Manejar el login si es un POST
     if request.method == 'POST' and 'username' in request.POST:
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -14,12 +16,34 @@ def inicio(request):
         
         if user is not None:
             login(request, user)
-            messages.success(request, f'¡Bienvenido de nuevo, {user.first_name}!')
+            # Redirigir a selección de preferencias si no las ha completado
+            try:
+                perfil = PerfilUsuario.objects.get(usuario=user)
+                if not perfil.onboarding_completado:
+                    return redirect('seleccionar_preferencias')
+            except PerfilUsuario.DoesNotExist:
+                pass
             return redirect('inicio')
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
     
-    eventos_destacados = Evento.objects.all().order_by('-fecha_creacion')[:6]
+    # Obtener eventos destacados basados en preferencias del usuario
+    if request.user.is_authenticated:
+        try:
+            perfil = request.user.perfilusuario
+            if perfil.preferencias.exists():
+                # Eventos que coinciden con las preferencias del usuario
+                eventos_destacados = Evento.objects.filter(
+                    categorias__in=perfil.preferencias.all()
+                ).distinct().annotate(
+                    coincidencias=Count('categorias', filter=Q(categorias__in=perfil.preferencias.all()))
+                ).order_by('-coincidencias', '-fecha_creacion')[:6]
+            else:
+                eventos_destacados = Evento.objects.all().order_by('-fecha_creacion')[:6]
+        except PerfilUsuario.DoesNotExist:
+            eventos_destacados = Evento.objects.all().order_by('-fecha_creacion')[:6]
+    else:
+        eventos_destacados = Evento.objects.all().order_by('-fecha_creacion')[:6]
     
     context = {
         'eventos_destacados': eventos_destacados,
@@ -28,12 +52,93 @@ def inicio(request):
     return render(request, 'Humanet/inicio.html', context)
 
 
-def sobre_nosotros(request):
-    return render(request, 'Humanet/sobre_nosotros.html')
+@login_required
+def seleccionar_preferencias(request):
+    perfil, created = PerfilUsuario.objects.get_or_create(usuario=request.user)
+    
+    # Si ya completó el onboarding, redirigir
+    if perfil.onboarding_completado:
+        return redirect('inicio')
+    
+    if request.method == 'POST':
+        categorias_ids = request.POST.getlist('categorias')
+        
+        if len(categorias_ids) >= 3:
+            perfil.preferencias.set(categorias_ids)
+            perfil.onboarding_completado = True
+            perfil.save()
+            messages.success(request, '¡Preferencias guardadas! Ahora verás eventos personalizados para ti.')
+            return redirect('inicio')
+        else:
+            messages.error(request, 'Por favor selecciona al menos 3 categorías.')
+    
+    categorias = Categoria.objects.all()
+    return render(request, 'Humanet/seleccionar_preferencias.html', {
+        'categorias': categorias
+    })
 
-def logout_view(request):
-    logout(request)
-    return redirect('inicio')
+
+def lista_eventos(request):
+    eventos = Evento.objects.all()
+    
+    # Búsqueda por texto
+    busqueda = request.GET.get('busqueda', '')
+    if busqueda:
+        eventos = eventos.filter(
+            Q(nombre__icontains=busqueda) |
+            Q(descripcion__icontains=busqueda) |
+            Q(ciudad__icontains=busqueda) |
+            Q(ubicacion__icontains=busqueda)
+        )
+    
+    # Filtro por categorías
+    categorias_filtro = request.GET.getlist('categorias')
+    if categorias_filtro:
+        eventos = eventos.filter(categorias__id__in=categorias_filtro).distinct()
+    
+    # Filtro por región
+    region_filtro = request.GET.get('region', '')
+    if region_filtro:
+        eventos = eventos.filter(region=region_filtro)
+    
+    # Filtro por fecha
+    fecha_desde = request.GET.get('fecha_desde', '')
+    fecha_hasta = request.GET.get('fecha_hasta', '')
+    if fecha_desde:
+        eventos = eventos.filter(fecha__gte=fecha_desde)
+    if fecha_hasta:
+        eventos = eventos.filter(fecha__lte=fecha_hasta)
+    
+    # Ordenar por relevancia si el usuario está autenticado
+    if request.user.is_authenticated:
+        try:
+            perfil = request.user.perfilusuario
+            if perfil.preferencias.exists():
+                eventos = eventos.annotate(
+                    coincidencias=Count('categorias', filter=Q(categorias__in=perfil.preferencias.all()))
+                ).order_by('-coincidencias', '-fecha_creacion')
+            else:
+                eventos = eventos.order_by('-fecha_creacion')
+        except PerfilUsuario.DoesNotExist:
+            eventos = eventos.order_by('-fecha_creacion')
+    else:
+        eventos = eventos.order_by('-fecha_creacion')
+    
+    # Obtener todas las categorías y regiones para los filtros
+    todas_categorias = Categoria.objects.all()
+    regiones = Evento.REGIONES
+    
+    context = {
+        'eventos': eventos,
+        'todas_categorias': todas_categorias,
+        'regiones': regiones,
+        'busqueda': busqueda,
+        'categorias_filtro': categorias_filtro,
+        'region_filtro': region_filtro,
+        'fecha_desde': fecha_desde,
+        'fecha_hasta': fecha_hasta,
+    }
+    return render(request, 'Humanet/lista_eventos.html', context)
 
 def registro(request):
     if request.method == 'POST':
@@ -43,12 +148,10 @@ def registro(request):
         tipo_cuenta = request.POST.get('tipo_cuenta', 'individuo')
         
         if tipo_cuenta == 'organizacion':
-            # Para organización: usar nombre_organizacion como first_name y last_name
             nombre_org = request.POST.get('nombre_organizacion', '')
-            # Crear una copia mutable de POST
             post_data = request.POST.copy()
             post_data['first_name'] = nombre_org
-            post_data['last_name'] = ''  # Dejar apellido vacío para organizaciones
+            post_data['last_name'] = ''
             form = RegistroForm(post_data, request.FILES)
         
         if form.is_valid():
@@ -64,14 +167,25 @@ def registro(request):
                 tipo_cuenta=tipo_cuenta,
                 numero_celular=numero_celular,
                 biografia=biografia,
-                foto=foto
+                foto=foto,
+                onboarding_completado=False  
             )
             
             login(request, usuario)
-            return redirect('perfil')
+            return redirect('seleccionar_preferencias') 
     else:
         form = RegistroForm()
     return render(request, 'Humanet/registro.html', {'form': form})
+
+
+
+def sobre_nosotros(request):
+    return render(request, 'Humanet/sobre_nosotros.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('inicio')
+
 
 @login_required
 def perfil(request):
@@ -91,21 +205,17 @@ def perfil(request):
 @login_required
 def crear_evento(request):
     if request.method == 'POST':
-        form = EventoForm(request.POST)
+        form = EventoForm(request.POST, request.FILES)  # ← Agrega request.FILES
         if form.is_valid():
             evento = form.save(commit=False)
             evento.creador = request.user
             evento.save()
+            form.save_m2m()  # Guardar las categorías (ManyToMany)
+            messages.success(request, f'¡Evento "{evento.nombre}" creado exitosamente!')
             return redirect('lista_eventos')
     else:
         form = EventoForm()
     return render(request, 'Humanet/crear_evento.html', {'form': form})
-
-
-
-def lista_eventos(request):
-    eventos = Evento.objects.all()
-    return render(request, 'Humanet/lista_eventos.html', {'eventos': eventos})
 
 
 
