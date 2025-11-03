@@ -1,31 +1,224 @@
-  {% if user.is_authenticated %}
-      <a href="{% url 'perfil' %}">Perfil</a>
-    {% else %}
-      <a href="{% url 'registro' %}">Únete</a>
+{% extends 'Humanet/base.html' %}
 
-      <li><a href="#" id="openLoginBtn" style="cursor: pointer;">ÚNETE</a></li>
+{% block title %}Inicio{% endblock %}
+{% block page_name %}Bienvenida a Humanet{% endblock %}
+
+{% load static %}
+
+
+{%block styles%}
+<style>
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+    
+    }
+
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        
+    }
+
+
+    .header {
+        background: #2c5f5f;
+        padding: 15px 0;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .nav-container {
+        max-width: 1900px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        text-transform: uppercase;
+    }
+
+    .logo-icon {
+        font-size: 24px;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 60px 40px;
+        list-style: none;
+    }
+
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        text-transform: uppercase;
+        transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+        color: #a8e6cf;
+    }
+
+    .sistema_login{
+        display: none;
+    }
+</style>
+{%endblock%}
 
 
 
-{% block extra_nav %}
-<header>
-    <div class="interfaz">
-        <div class="logo">
-            <span>C:</span>
-            <span>Helpy</span>
+{%block extra_nav %}
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">c:</span>
+                <span>HELPY</span>
             </div>
-        <div>
-            <ul class= "links">
-                <li><a href= "/">Inicio</a></li>      
-                <li><a href="/eventos/">Eventos</a></li>
+            <ul class="nav-links">
+                <li><a href="{% url 'inicio' %}">INICIO</a></li>
+                <li><a href="{% url 'lista_eventos' %}">EVENTOS</a></li>  
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'perfil' %}">Perfil</a></li>
+                    <li><a href="{% url 'perfil' %}">PERFIL</a></li>
                 {% else %}
-                    <li><a>Algo como en la pagina de inicio</a></li>
+                    <li><a href="#" id="openLoginBtn" style="cursor: pointer;">ÚNETE</a></li>
                 {% endif %}
-                </ul>   
-            </div>
+            </ul>
+        </div>
+    </header>
+{%endblock%}
+
+
+
+<div id="loginModal" class="modal-overlay">
+  <!-- Contenedor del formulario -->
+  <div class="modal-content">
+    <!-- Botón de cierre -->
+    <span id="closeLoginBtn" class="close-btn">&times;</span>
+    
+    <h2 style="text-align: center; margin-bottom: 30px; color: #2c5f5f;">Iniciar Sesión</h2>
+    
+    <form method="post" action="{% url 'inicio' %}">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 20px;">
+            <label for="id_username" style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Usuario:</label>
+            <input type="text" name="username" id="id_username" required 
+                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
         </div>
 
-{% endblock %}
+        <div style="margin-bottom: 20px;">
+            <label for="id_password" style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Contraseña:</label>
+            <input type="password" name="password" id="id_password" required
+                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+        </div>
 
+        <button type="submit" style="width: 100%; padding: 12px; background: #2c5f5f; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; transition: background 0.3s;">
+            Iniciar Sesión
+        </button>
+    </form>
+
+    <p style="text-align: center; margin-top: 20px; color: #666;">
+        ¿No tienes cuenta? <a href="{% url 'registro' %}" style="color: #2c5f5f; font-weight: bold; text-decoration: none;">Regístrate aquí</a>
+    </p>
+  </div>
+</div>
+
+<!-- Script para abrir/cerrar el modal y mensajes -->
+<script>
+  const openBtn = document.getElementById('openLoginBtn');
+  const closeBtn = document.getElementById('closeLoginBtn');
+  const modal = document.getElementById('loginModal');
+
+  // Abrir modal
+  if (openBtn) {
+    openBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      modal.style.display = 'flex';
+    });
+  }
+
+  // Cerrar modal
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+  }
+
+  // Cierra el modal al hacer clic fuera del contenido
+  window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+
+  // Si hubo error de login, abrir el modal automáticamente
+  {% if show_login_error %}
+    modal.style.display = 'flex';
+  {% endif %}
+</script>
+
+
+
+
+{% block content %}
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Helpy - Sobre Nosotros</title>
+    </head>
+    <body>
+        <header>
+            <h1>Sobre Nosotros</h1>
+            
+        </header>
+        
+        <main>
+            <section>
+                <h2>¿Quiénes somos?</h2>
+                <p>Somos un equipo dedicado a proporcionar las mejores soluciones para nuestros usuarios.</p>
+            </section>
+            
+            <section>
+                <h2>Nuestra Misión</h2>
+                <p>Hacer que la tecnología sea accesible para todos, brindando herramientas simples y efectivas.</p>
+            </section>
+            
+            <section>
+                <h2>Nuestro Equipo</h2>
+                <ul>
+                    <li>Desarrolladores apasionados</li>
+                    <li>Diseñadores creativos</li>
+                    <li>Soporte técnico 24/7</li>
+                </ul>
+            </section>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 Helpy. Todos los derechos reservados.</p>
+        </footer>
+    </body>
+    </html>
+{% endblock %}
