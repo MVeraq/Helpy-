@@ -61,25 +61,32 @@
         
     }
 
-    
-    /* Header/Navegación */
+
     .header {
-        background: #2c5f5f;
-        padding: 15px 0;
-        position: fixed;
+        position: relative; /* Cambio de fixed a relative */
         top: 0;
-        width: 100%;
+        left: 0;
+        right: 0;
         z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 20px 30px;
+        background: transparent; /* Inicialmente transparente */
+    }
+
+    .nav-container-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: rgba(44, 95, 95, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        padding: 15px 30px;
     }
 
     .nav-container {
-        max-width: 1900px;
-        margin: 0 auto;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 5.8px 20px;
+        padding: 0;
     }
 
     .logo {
@@ -98,8 +105,10 @@
 
     .nav-links {
         display: flex;
-        gap: 60px 40px;
+        gap: 40px;
         list-style: none;
+        margin: 0;
+        padding: 0;
     }
 
     .nav-links a {
@@ -107,25 +116,29 @@
         text-decoration: none;
         font-weight: bold;
         text-transform: uppercase;
-        transition: color 0.3s;
+        transition: all 0.3s;
+        padding: 8px 16px;
+        border-radius: 8px;
     }
 
     .nav-links a:hover {
+        background: rgba(168, 230, 207, 0.2);
         color: #a8e6cf;
     }
-
     .sistema_login{
         display: none;
     }
 
     /* Hero Section */
+        /* Hero Section - AJUSTADO PARA HEADER FLOTANTE */
     .hero {
         position: relative;
         height: 100vh;
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        padding-left: 50px;
+        padding-left: 80px; /* Aumentado para mejor visualización */
+        padding-top: 100px; /* Espacio para el header flotante */
         color: white;
         overflow: hidden;
     }
@@ -136,9 +149,9 @@
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover; /* ajusta el video sin deformarlo */
-        z-index: -1; /* lo envía al fondo */
-        filter: brightness(0.6); /* oscurece un poco para que se lea el texto */
+        object-fit: cover;
+        z-index: -1;
+        filter: brightness(0.6);
     }
 
     .hero-content {
@@ -152,12 +165,14 @@
         margin-bottom: 20px;
         text-transform: uppercase;
         line-height: 1.2;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.5); /* Sombra para mejor legibilidad */
     }
 
     .hero p {
         font-size: 1.3rem;
         margin-bottom: 30px;
         opacity: 0.9;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
     }
 
     .cta-button {
@@ -166,23 +181,25 @@
         color: white;
         padding: 15px 30px;
         text-decoration: none;
-        border-radius: 5px;
+        border-radius: 10px; /* Más redondeado */
         font-weight: bold;
         text-transform: uppercase;
         transition: all 0.3s;
         font-size: 16px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
 
     .cta-button:hover {
         background: white;
         color: #2c5f5f;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     }
-
     /* Events Section */
     .events-section {
         background: #a8e6cf;
         padding: 80px 0;
-        min-height: 60vh;
+        min-height: 90vh;
     }
 
     .events-container {
@@ -281,7 +298,7 @@
     /* Footer */
     .footer {
         background-color: #2c5f5f;
-        padding: 30px 0;
+        padding: 20px 0;
         text-align: center;
     }
 
@@ -421,20 +438,166 @@
     color: white;
 }
 
+/* NUEVA SECCIÓN: SOBRE NOSOTROS */
+.about-section {
+    background: linear-gradient(135deg, #667eea 0%, #7bff00 100%); /* Fondo morado degradado */
+    padding: 120px 0;
+    color: white;
+}
 
+.about-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.about-header {
+    text-align: center;
+    margin-bottom: 80px;
+}
+
+.about-header h2 {
+    font-size: 3rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.header-line {
+    width: 150px;
+    height: 4px;
+    background: white;
+    margin: 0 auto;
+    border-radius: 2px;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+    margin-bottom: 80px;
+}
+
+.about-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px 30px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s;
+}
+
+.about-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.about-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: white;
+}
+
+.about-card p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+}
+
+.team-list {
+    list-style: none;
+    padding: 0;
+}
+
+.team-list li {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    color: rgba(255, 255, 255, 0.9);
+    padding-left: 0;
+}
+
+/* Estadísticas */
+.about-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-top: 60px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s;
+}
+
+.stat-item:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.stat-label {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Responsive para about section */
+@media (max-width: 768px) {
+    .about-section {
+        padding: 80px 0;
+    }
+    
+    .about-header h2 {
+        font-size: 2rem;
+    }
+    
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .about-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
 
 
 </style>
 
 <!-- Header -->
+<!-- Header -->
 <header class="header">
-    <div class="nav-container">
-        <div class="logo">
-            <span class="logo-icon">c:</span>
-            <span>HELPY</span>
-        </div>
+    <div class="nav-container-wrapper">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">c:</span>
+                <span>HELPY</span>
+            </div>
             <ul class="nav-links">
-                <li><a href="{% url 'sobre_nosotros' %}">OBJETIVOS</a></li>
+                 <li><a href="#sobre-nosotros">OBJETIVOS</a></li>
                 <li><a href="{% url 'lista_eventos' %}">EVENTOS</a></li>  
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'perfil' %}">PERFIL</a></li>
@@ -442,7 +605,8 @@
                     <li><a href="#" id="openLoginBtn" style="cursor: pointer;">ÚNETE</a></li>
                 {% endif %}
             </ul>
-         </div>
+        </div>
+    </div>
 </header>
 
 <!-- Ventana emergente (modal) -->
@@ -587,6 +751,35 @@
     </div>
 </section>
 
+
+<!-- NUEVA SECCIÓN: SOBRE NOSOTROS -->
+<section class="about-section" id="sobre-nosotros">
+    <div class="about-container">
+        <div class="about-header">
+        </div>
+        
+        <div class="about-grid">
+            <!-- Card 1 -->
+            <div class="about-card">
+                <div class="card-icon">🤝</div>
+                <h3>¿Quiénes somos?</h3>
+                <p>Somos una comunidad dedicada a conectar personas que quieren ayudar con causas que necesitan apoyo. Creemos en el poder de la acción colectiva para transformar nuestras comunidades.</p>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="about-card">
+                <div class="card-icon">🎯</div>
+                <h3>Nuestra Misión</h3>
+                <p>Facilitar la organización y participación en eventos de ayuda social, creando un puente entre quienes quieren colaborar y las causas que lo necesitan.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <!-- ... tu footer existente ... -->
+</footer>
 
 <!-- Footer -->
 <footer class="footer">
