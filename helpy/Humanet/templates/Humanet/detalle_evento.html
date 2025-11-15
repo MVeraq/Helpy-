@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ evento.nombre }} - Helpy</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+
     <style>
     .btn-inscribirse {
         display: inline-block;
@@ -62,34 +64,39 @@
         }
         
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            background-color: #f4f4f4;
+            padding: 20px;
+            background: linear-gradient(135deg, #a8e6cf 0%, #f0f8f5 100%);
+            min-height: 100vh;
         }
-        
+
         header {
-            background: #333;
+            background: #2c5f5f;
             color: #fff;
             padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(44, 95, 95, 0.3);
         }
-        
+
         header h1 {
             margin-bottom: 10px;
         }
-        
+
         nav ul {
             list-style: none;
             display: flex;
             gap: 20px;
         }
-        
+
         nav a {
             color: #fff;
             text-decoration: none;
         }
-        
+
         nav a:hover {
-            text-decoration: underline;
+            color: #a8e6cf;
         }
         
         main {
@@ -254,11 +261,7 @@
                     {{ categoria.icono }} {{ categoria.nombre }}
                 </span>
                 {% endfor %}
-            </div>
-            
-            <p style="color: #666;">
-                Creado por: 
-                
+            </div>         
             <p style="color: #666;">
                 Creado por: 
                 <a href="{% url 'perfil_publico' evento.creador.username %}" style="color: #007bff; font-weight: bold;">
@@ -271,7 +274,7 @@
        <div class="evento-meta">
     <div class="meta-item">
         <strong>📅 Fecha</strong>
-        <span>{{ evento.fecha|date:"l, d de F de Y" }}</span>
+        <span>{{ evento.fecha|date:"d/m/Y" }}</span>
     </div>
     <div class="meta-item">
         <strong>🕐 Hora</strong>
