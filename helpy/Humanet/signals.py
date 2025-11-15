@@ -8,7 +8,7 @@ def crear_categorias_iniciales(sender, **kwargs):
     Se ejecuta automáticamente después de cada 'python manage.py migrate'
     """
     # Solo ejecutar para la app Humanet
-    if sender.name == 'Humanet':
+    if sender.name == 'helpy.Humanet':
         categorias = [
             {'nombre': 'Ayuda comunitaria', 'icono': '🤝', 'color': "#444D6B", 
              'descripcion': 'Mejoramiento de espacios públicos, Eventos solidarios, trueques comunitarios, etc.'},

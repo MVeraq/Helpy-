@@ -790,47 +790,47 @@
 </footer>
 
 <script>
-function scrollEvents(direction) {
-    const carousel = document.getElementById('eventsCarousel');
-    const scrollAmount = 400;
-    
-    if (direction === 'left') {
-        carousel.scrollBy({
-            left: -scrollAmount,
-            behavior: 'smooth'
-        });
-    } else {
-        carousel.scrollBy({
-            left: scrollAmount,
-            behavior: 'smooth'
-        });
-    }
-}
-
-// Auto-scroll del carrusel
-let autoScrollInterval;
-function startAutoScroll() {
-    autoScrollInterval = setInterval(() => {
+    function scrollEvents(direction) {
         const carousel = document.getElementById('eventsCarousel');
-        carousel.scrollBy({
-            left: 400,
-            behavior: 'smooth'
-        });
-    }, 5000);
-}
+        const scrollAmount = 400;
+        
+        if (direction === 'left') {
+            carousel.scrollBy({
+                left: -scrollAmount,
+                behavior: 'smooth'
+            });
+        } else {
+            carousel.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    }
 
-function stopAutoScroll() {
-    clearInterval(autoScrollInterval);
-}
+    // Auto-scroll del carrusel
+    let autoScrollInterval;
+    function startAutoScroll() {
+        autoScrollInterval = setInterval(() => {
+            const carousel = document.getElementById('eventsCarousel');
+            carousel.scrollBy({
+                left: 400,
+                behavior: 'smooth'
+            });
+        }, 5000);
+    }
+
+    function stopAutoScroll() {
+        clearInterval(autoScrollInterval);
+    }
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    startAutoScroll();
-    
-    const carousel = document.getElementById('eventsCarousel');
-    carousel.addEventListener('mouseenter', stopAutoScroll);
-    carousel.addEventListener('mouseleave', startAutoScroll);
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        startAutoScroll();
+        
+        const carousel = document.getElementById('eventsCarousel');
+        carousel.addEventListener('mouseenter', stopAutoScroll);
+        carousel.addEventListener('mouseleave', startAutoScroll);
+    });
 </script>
 
 {% endblock %}

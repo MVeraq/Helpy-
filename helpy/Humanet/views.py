@@ -218,12 +218,6 @@ def crear_evento(request):
     return render(request, 'Humanet/crear_evento.html', {'form': form})
 
 
-
-def detalle_evento(request, evento_id):
-    evento = get_object_or_404(Evento, id=evento_id)
-    return render(request, 'Humanet/detalle_evento.html', {'evento': evento})
-
-
 def perfil_publico(request, username):
     usuario = get_object_or_404(User, username=username)
     perfil, created = PerfilUsuario.objects.get_or_create(usuario=usuario)
@@ -304,8 +298,8 @@ def cancelar_inscripcion(request, evento_id):
 
 def detalle_evento(request, evento_id):
     evento = get_object_or_404(Evento, id=evento_id)
-    inscripciones = evento.inscripciones.all()
-    total_inscritos = inscripciones.count()
+    inscripciones_totales = Inscripcion.objects.filter(evento=evento)
+    total_inscritos = inscripciones_totales.count()
     
     # Verificar si el usuario actual está inscrito
     usuario_inscrito = False
@@ -314,7 +308,7 @@ def detalle_evento(request, evento_id):
     
     context = {
         'evento': evento,
-        'inscripciones': inscripciones,
+        'inscripciones': inscripciones_totales,
         'total_inscritos': total_inscritos,
         'usuario_inscrito': usuario_inscrito,
     }
