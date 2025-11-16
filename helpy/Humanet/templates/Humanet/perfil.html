@@ -1,8 +1,24 @@
 {% extends 'Humanet/base.html' %}
 {% block title %}Mi Perfil - Helpy{% endblock %}
 
+
+{%block extra_nav %}
+<header>
+    <h1>Mi Perfil</h1>    
+    <nav>
+        <ul>
+            <li><a href="{% url 'inicio' %}">INICIO</a></li>
+            <li><a href="{% url 'lista_eventos' %}">EVENTOS</a></li>
+        </ul>
+    </nav>
+</header>
+{%endblock%}
+
+
 {% block content %}
-    <!-- Mensaje de éxito para eliminación de evento -->
+
+<head>
+
     {% if mensaje == 'success' and evento_nombre %}
     <div style="
         max-width: 1200px;
@@ -31,35 +47,39 @@
             box-sizing: border-box;
         }
         
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2c5f5f 0%, #a8e6cf 100%);
-            min-height: 100vh;
+        header {
+            background: #2c5f5f;
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(44, 95, 95, 0.3);
         }
-        
-        /* Header/Navegación */
-        .top-nav {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 30px;
-            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+
+        header h1 {
+            margin-bottom: 10px;
         }
-        
-        .top-nav ul {
+
+
+        nav ul {
             list-style: none;
             display: flex;
-            gap: 30px;
-            align-items: center;
+            gap: 20px;
         }
-        
-        .top-nav a {
+
+        nav a {
+            color: #fff;
             text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
         }
-        
-        .top-nav a:hover {
-            color: #2c5f5f;
+
+        nav a:hover {
+            color: #a8e6cf;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background: linear-gradient(135deg, #a8e6cf 0%, #f0f8f5 100%);
+            min-height: 100vh;
         }
         
         /* Container principal */
@@ -349,15 +369,6 @@
     </style>
 </head>
 <body>
-    <!-- Navegación superior -->
-    <nav class="top-nav">
-        <ul>
-            <li><a href="{% url 'inicio' %}">🏠 Inicio</a></li>
-            <li><a href="{% url 'lista_eventos' %}">📅 Eventos</a></li>
-            <li><a href="{% url 'sobre_nosotros' %}">ℹ️ Quiénes Somos</a></li>
-        </ul>
-    </nav>
-    
     <!-- Container principal -->
     <div class="container">
         <!-- Card de perfil (izquierda) -->
@@ -433,45 +444,43 @@
                     {% if user.eventos.all %}
                     <ul class="event-list">
                         {% for evento in user.eventos.all %}
-                        {% for evento in user.eventos.all %}
-            <li class="event-item">
-                <div style="display: flex; gap: 15px; align-items: center; flex: 1;">
-                    <!-- AGREGAR MINIATURA -->
-                    {% if evento.imagen %}
-                    <img src="{{ evento.imagen.url }}" 
-                        alt="{{ evento.nombre }}" 
-                        style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
-                    {% else %}
-                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: white;">
-                        {{ evento.categorias.first.icono|default:"📅" }}
-                    </div>
-                    {% endif %}
-                    
-                    <div class="event-item-info" style="flex: 1;">
-                        <h4>{{ evento.nombre }}</h4>
-                        
-                        <!-- AGREGAR CATEGORÍAS -->
-                        <div style="display: flex; flex-wrap: wrap; gap: 5px; margin: 5px 0;">
-                            {% for categoria in evento.categorias.all|slice:":2" %}
-                            <span style="padding: 2px 8px; background: {{ categoria.color }}; color: white; border-radius: 10px; font-size: 10px; font-weight: bold;">
-                                {{ categoria.icono }}
-                            </span>
-                            {% endfor %}
-                        </div>
-                        
-                        <p>📅 {{ evento.fecha|date:"d/m/Y" }} | 🕐 {{ evento.hora|time:"H:i" }}</p>
-                        <p>📍 {{ evento.ubicacion|truncatewords:10 }}</p>
-                    </div>
-                </div>
-                
-                <div class="event-item-actions">
-                    <a href="{% url 'detalle_evento' evento.id %}" class="btn-small btn-ver">👁️ Ver</a>
-                    <button class="btn-small btn-eliminar" onclick="confirmarEliminar('{{ evento.nombre }}', {{ evento.id }})">
-                        🗑️ Eliminar
-                    </button>
-                </div>
-            </li>
-            {% endfor %}
+                        <li class="event-item">
+                            <div style="display: flex; gap: 15px; align-items: center; flex: 1;">
+                                <!-- AGREGAR MINIATURA -->
+                                {% if evento.imagen %}
+                                <img src="{{ evento.imagen.url }}" 
+                                    alt="{{ evento.nombre }}" 
+                                    style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+                                {% else %}
+                                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: white;">
+                                    {{ evento.categorias.first.icono|default:"📅" }}
+                                </div>
+                                {% endif %}
+                                
+                                <div class="event-item-info" style="flex: 1;">
+                                    <h4>{{ evento.nombre }}</h4>
+                                    
+                                    <!-- AGREGAR CATEGORÍAS -->
+                                    <div style="display: flex; flex-wrap: wrap; gap: 5px; margin: 5px 0;">
+                                        {% for categoria in evento.categorias.all|slice:":2" %}
+                                        <span style="padding: 2px 8px; background: {{ categoria.color }}; color: white; border-radius: 10px; font-size: 10px; font-weight: bold;">
+                                            {{ categoria.icono }}
+                                        </span>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    <p>📅 {{ evento.fecha|date:"d/m/Y" }} | 🕐 {{ evento.hora|time:"H:i" }}</p>
+                                    <p>📍 {{ evento.ubicacion|truncatewords:10 }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="event-item-actions">
+                                <a href="{% url 'detalle_evento' evento.id %}" class="btn-small btn-ver">👁️ Ver</a>
+                                <button class="btn-small btn-eliminar" onclick="confirmarEliminar('{{ evento.nombre }}', {{ evento.id }})">
+                                    🗑️ Eliminar
+                                </button>
+                            </div>
+                        </li>
                         {% endfor %}
                     </ul>
                     {% else %}
@@ -482,45 +491,45 @@
                     {% endif %}
                 </div>
             </div>
-            
-<!-- Eventos inscritos -->
-<div class="event-box">
-    <div class="event-box-header" onclick="toggleEventBox('enrolled')">
-        <div class="event-box-title">
-            ✅ Eventos Inscritos ({{ user.inscripciones.count }})
-        </div>
-        <div class="toggle-icon" id="toggle-enrolled">▼</div>
-    </div>
-    
-    <div class="event-content" id="content-enrolled">
-        {% if user.inscripciones.all %}
-        <ul class="event-list">
-            {% for inscripcion in user.inscripciones.all %}
-            <li class="event-item">
-                <div class="event-item-info">
-                    <h4>{{ inscripcion.evento.nombre }}</h4>
-                    <p>📅 {{ inscripcion.evento.fecha|date:"d/m/Y" }} | 🕐 {{ inscripcion.evento.hora|time:"H:i" }}</p>
-                    <p>📍 {{ inscripcion.evento.ubicacion|truncatewords:10 }}</p>
-                    <p style="font-size: 12px; color: #999;">Inscrito el {{ inscripcion.fecha_inscripcion|date:"d/m/Y" }}</p>
+
+            <!-- Eventos inscritos -->
+            <div class="event-box">
+                <div class="event-box-header" onclick="toggleEventBox('enrolled')">
+                    <div class="event-box-title">
+                        ✅ Eventos Inscritos ({{ user.inscripciones.count }})
+                    </div>
+                    <div class="toggle-icon" id="toggle-enrolled">▼</div>
                 </div>
-                <div class="event-item-actions">
-                    <a href="{% url 'detalle_evento' inscripcion.evento.id %}" class="btn-small btn-ver">👁️ Ver</a>
-                    <a href="{% url 'cancelar_inscripcion' inscripcion.evento.id %}" class="btn-small btn-eliminar" 
-                       onclick="return confirm('¿Seguro que quieres cancelar tu inscripción?')">
-                        ❌ Cancelar
-                    </a>
+                
+                <div class="event-content" id="content-enrolled">
+                    {% if user.inscripciones.all %}
+                    <ul class="event-list">
+                        {% for inscripcion in user.inscripciones.all %}
+                        <li class="event-item">
+                            <div class="event-item-info">
+                                <h4>{{ inscripcion.evento.nombre }}</h4>
+                                <p>📅 {{ inscripcion.evento.fecha|date:"d/m/Y" }} | 🕐 {{ inscripcion.evento.hora|time:"H:i" }}</p>
+                                <p>📍 {{ inscripcion.evento.ubicacion|truncatewords:10 }}</p>
+                                <p style="font-size: 12px; color: #999;">Inscrito el {{ inscripcion.fecha_inscripcion|date:"d/m/Y" }}</p>
+                            </div>
+                            <div class="event-item-actions">
+                                <a href="{% url 'detalle_evento' inscripcion.evento.id %}" class="btn-small btn-ver">👁️ Ver</a>
+                                <a href="{% url 'cancelar_inscripcion' inscripcion.evento.id %}" class="btn-small btn-eliminar" 
+                                   onclick="return confirm('¿Seguro que quieres cancelar tu inscripción?')">
+                                    ❌ Cancelar
+                                </a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="no-events">
+                        <p>Aún no te has inscrito en ningún evento.</p>
+                        <p><a href="{% url 'lista_eventos' %}" style="color: #667eea;">Ver eventos disponibles →</a></p>
+                    </div>
+                    {% endif %}
                 </div>
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <div class="no-events">
-            <p>Aún no te has inscrito en ningún evento.</p>
-            <p><a href="{% url 'lista_eventos' %}" style="color: #667eea;">Ver eventos disponibles →</a></p>
-        </div>
-        {% endif %}
-    </div>
-</div>
+            </div>
         </div>
     </div>
     
@@ -534,17 +543,14 @@
             toggle.classList.toggle('open');
         }
         
-function confirmarEliminar(nombreEvento, eventoId) {
-    // Redirigir directamente a la página de confirmación
-    window.location.href = '/eventos/' + eventoId + '/eliminar/';
-}
-
-
-        
-        
+        function confirmarEliminar(nombreEvento, eventoId) {
+            // Redirigir directamente a la página de confirmación
+            window.location.href = '/eventos/' + eventoId + '/eliminar/';
+        }           
         // Abrir por defecto el primer acordeón
         document.addEventListener('DOMContentLoaded', function() {
             toggleEventBox('created');
         });
     </script>
+</body>
 {% endblock %}

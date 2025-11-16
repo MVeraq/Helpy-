@@ -20,6 +20,7 @@
         }
         
         header {
+            border-radius: 10px;
             background: #2c5f5f;
             color: #fff;
             padding: 20px;
@@ -46,17 +47,32 @@
         }
         
         main {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
-            padding: 30px;
+            padding: 40px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
         h2 {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             color: #333;
+            text-align: center;
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2c5f5f;
+        }
+        
+        .form-section h3 {
+            color: #2c5f5f;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
         }
         
         .form-group {
@@ -65,7 +81,7 @@
         
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-weight: bold;
             color: #555;
         }
@@ -73,17 +89,46 @@
         input[type="text"],
         input[type="date"],
         input[type="time"],
+        input[type="file"],
         select,
         textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
             font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2c5f5f;
         }
         
         textarea {
             resize: vertical;
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        #imagePreview img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+        
+        .location-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
         
         #map {
@@ -91,46 +136,106 @@
             width: 100%;
             margin: 15px 0;
             border: 2px solid #ddd;
-            border-radius: 4px;
+            border-radius: 8px;
         }
         
         .map-instructions {
-            background: #e8f4f8;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 10px;
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
             font-size: 14px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .categoria-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        
+        .categoria-label {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            transition: all 0.3s;
+        }
+        
+        .categoria-label:hover {
+            border-color: #2c5f5f;
+            background: #f0f8f5;
+            transform: translateY(-2px);
+        }
+        
+        .categoria-label input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        .categoria-label input[type="checkbox"]:checked + span {
+            color: #2c5f5f;
+            font-weight: bold;
+        }
+        
+        .nota-creador {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
         }
         
         button[type="submit"] {
             background: #28a745;
             color: white;
-            padding: 12px 30px;
+            padding: 15px 40px;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
+            font-weight: bold;
             width: 100%;
+            transition: all 0.3s;
         }
         
         button[type="submit"]:hover {
             background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
         }
         
         .error-list {
             background: #f8d7da;
             color: #721c24;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            border-left: 4px solid #dc3545;
         }
         
         .error-list ul {
             list-style: none;
+            padding-left: 0;
         }
         
         .error-list li {
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .location-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .categoria-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -140,8 +245,8 @@
         <nav>
             <ul>
                 <li><a href="/">Inicio</a></li>
-                <li><a href="{% url 'lista_eventos' %}">Ver Eventos</a></li>
                 <li><a href="{% url 'perfil' %}">Mi Perfil</a></li>
+                <li><a href="{% url 'lista_eventos' %}">Ver Eventos</a></li>
             </ul>
         </nav>
     </header>
@@ -151,7 +256,7 @@
         
         {% if form.errors %}
         <div class="error-list">
-            <strong>Por favor corrige los siguientes errores:</strong>
+            <strong>⚠️ Por favor corrige los siguientes errores:</strong>
             <ul>
                 {% for field in form %}
                     {% for error in field.errors %}
@@ -162,122 +267,134 @@
         </div>
         {% endif %}
         
-        <form method="post" id="eventoForm">
+        <form method="post" enctype="multipart/form-data" id="eventoForm">
             {% csrf_token %}
             
-            <div class="form-group">
-                <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
-                {{ form.nombre }}
-            </div>
+            <!-- SECCIÓN 1: INFORMACIÓN BÁSICA -->
+            <div class="form-section">
+                <h3>📋 Información Básica</h3>
+                
+                <div class="form-group">
+                    <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
+                    {{ form.nombre }}
+                </div>
 
-            <!-- NUEVA SECCIÓN DE IMAGEN -->
-            <div class="form-group">
-                <label for="{{ form.imagen.id_for_label }}">
-                    📸 {{ form.imagen.label }}
-                </label>
-                {{ form.imagen }}
-                {% if form.imagen.help_text %}
-                <div class="help-text">{{ form.imagen.help_text }}</div>
-                {% endif %}
-                <div id="imagePreview" style="margin-top: 15px; display: none;">
-                    <img id="previewImg" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid #ddd;">
+                <div class="form-group">
+                    <label for="{{ form.imagen.id_for_label }}">
+                        📸 {{ form.imagen.label }}
+                    </label>
+                    {{ form.imagen }}
+                    {% if form.imagen.help_text %}
+                    <div class="help-text">{{ form.imagen.help_text }}</div>
+                    {% endif %}
+                    <div id="imagePreview" style="margin-top: 15px; display: none;">
+                        <img id="previewImg" alt="Vista previa">
+                    </div>
+                </div>
+
+                <div class="location-grid">
+                    <div class="form-group">
+                        <label for="{{ form.fecha.id_for_label }}">{{ form.fecha.label }}</label>
+                        {{ form.fecha }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.hora.id_for_label }}">{{ form.hora.label }}</label>
+                        {{ form.hora }}
+                    </div>
                 </div>
             </div>
 
-            <script>
-            document.getElementById('id_imagen').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        document.getElementById('previewImg').src = e.target.result;
-                        document.getElementById('imagePreview').style.display = 'block';
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
-            </script>
-            
-            <div class="form-group">
-                <label for="{{ form.fecha.id_for_label }}">{{ form.fecha.label }}</label>
-                {{ form.fecha }}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.hora.id_for_label }}">{{ form.hora.label }}</label>
-                {{ form.hora }}
-            </div>
+            <!-- SECCIÓN 2: UBICACIÓN -->
+            <div class="form-section">
+                <h3>📍 Ubicación del Evento</h3>
+                
+                <div class="location-grid">
+                    <div class="form-group">
+                        <label for="{{ form.region.id_for_label }}">{{ form.region.label }} <span style="color: red;">*</span></label>
+                        {{ form.region }}
+                        <div class="help-text">Selecciona la región para que otros puedan filtrar eventos</div>
+                    </div>
 
-            <!-- NUEVOS CAMPOS DE UBICACIÓN -->
-            <div class="form-group">
-                <label for="{{ form.region.id_for_label }}">{{ form.region.label }}</label>
-                {{ form.region }}
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.ciudad.id_for_label }}">{{ form.ciudad.label }}</label>
-                {{ form.ciudad }}
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.ubicacion.id_for_label }}">{{ form.ubicacion.label }}</label>
-                {{ form.ubicacion }}
-    ...
-            
-            <div class="form-group">
-                <label for="{{ form.ubicacion.id_for_label }}">{{ form.ubicacion.label }}</label>
-                {{ form.ubicacion }}
+                    <div class="form-group">
+                        <label for="{{ form.ciudad.id_for_label }}">{{ form.ciudad.label }} <span style="color: red;">*</span></label>
+                        {{ form.ciudad }}
+                        <div class="help-text">Nombre de la ciudad o comuna</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.ubicacion.id_for_label }}">{{ form.ubicacion.label }}</label>
+                    {{ form.ubicacion }}
+                    <div class="help-text">Dirección específica o punto de referencia</div>
+                </div>
+                
                 <div class="map-instructions">
-                    💡 <strong>Tip:</strong> Haz clic en el mapa para seleccionar la ubicación exacta del evento
+                    💡 <strong>Tip:</strong> Haz clic en el mapa para marcar la ubicación exacta del evento. Esto ayudará a los participantes a encontrar el lugar.
                 </div>
                 <div id="map"></div>
                 {{ form.latitud }}
                 {{ form.longitud }}
             </div>
-            
-            <div class="form-group">
-                <label for="{{ form.descripcion.id_for_label }}">{{ form.descripcion.label }}</label>
-                {{ form.descripcion }}
+
+            <!-- SECCIÓN 3: DESCRIPCIÓN -->
+            <div class="form-section">
+                <h3>📝 Descripción del Evento</h3>
+                
+                <div class="form-group">
+                    <label for="{{ form.descripcion.id_for_label }}">{{ form.descripcion.label }}</label>
+                    {{ form.descripcion }}
+                    <div class="help-text">Describe brevemente de qué trata el evento</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.detalles.id_for_label }}">{{ form.detalles.label }} (Opcional)</label>
+                    {{ form.detalles }}
+                    <div class="help-text">Agrega información adicional como materiales necesarios, instrucciones, etc.</div>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label for="{{ form.detalles.id_for_label }}">{{ form.detalles.label }}</label>
-                {{ form.detalles }}
+
+            <!-- SECCIÓN 4: CATEGORÍAS -->
+            <div class="form-section">
+                <h3>🏷️ Categorías</h3>
+                <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+                    {{ form.categorias.help_text }}
+                </p>
+                <div class="categoria-grid">
+                    {% for checkbox in form.categorias %}
+                    <label class="categoria-label">
+                        {{ checkbox.tag }}
+                        <span>{{ checkbox.choice_label }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
             </div>
-            
 
+            <div class="nota-creador">
+                <strong>📝 Nota:</strong> Este evento será creado por <strong>{{ user.username }}</strong>
+            </div>
 
-<!-- NUEVA SECCIÓN DE CATEGORÍAS -->
-<div class="form-group">
-    <label style="display: block; margin-bottom: 15px; font-size: 18px; font-weight: bold;">
-        🏷️ {{ form.categorias.label }}
-    </label>
-    <p style="font-size: 14px; color: #666; margin-bottom: 15px;">
-        {{ form.categorias.help_text }}
-    </p>
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
-        {% for checkbox in form.categorias %}
-        <label style="display: flex; align-items: center; padding: 12px; background: #f8f9fa; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s;"
-               onmouseover="this.style.borderColor='#667eea'"
-               onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='transparent'">
-            {{ checkbox.tag }}
-            <span style="margin-left: 10px;">{{ checkbox.choice_label }}</span>
-        </label>
-        {% endfor %}
-    </div>
-</div>
-
-<div class="form-group" style="background: #e8f4f8; padding: 15px; border-radius: 4px;">
-    <strong>📝 Nota:</strong> Este evento será creado por <strong>{{ user.username }}</strong>
-</div>
-
-<button type="submit">✅ Crear Evento</button>
-
+            <button type="submit">✅ Crear Evento</button>
+        </form>
+    </main>
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Inicializar el mapa centrado en Villa Alemana, Chile
-        var map = L.map('map').setView([-33.0944, -71.3736], 13);
+        // PREVIEW DE IMAGEN
+        document.getElementById('id_imagen').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // INICIALIZAR MAPA
+        var map = L.map('map').setView([-33.0472, -71.6127], 11); // Centro de Chile (Valparaíso)
         
         // Agregar capa de OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -286,7 +403,7 @@
         
         var marker;
         
-        // Evento de clic en el mapa
+        // EVENTO DE CLIC EN EL MAPA
         map.on('click', function(e) {
             // Remover marcador anterior si existe
             if (marker) {
@@ -294,7 +411,9 @@
             }
             
             // Agregar nuevo marcador
-            marker = L.marker(e.latlng).addTo(map);
+            marker = L.marker(e.latlng).addTo(map)
+                .bindPopup('📍 Ubicación seleccionada')
+                .openPopup();
             
             // Actualizar campos ocultos con coordenadas
             document.getElementById('id_latitud').value = e.latlng.lat.toFixed(6);
@@ -305,13 +424,64 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.display_name) {
-                        document.getElementById('id_ubicacion').value = data.display_name;
+                        // Solo actualizar si el campo está vacío
+                        if (!document.getElementById('id_ubicacion').value) {
+                            document.getElementById('id_ubicacion').value = data.display_name;
+                        }
                     }
-                });
+                })
+                .catch(err => console.log('Error al obtener dirección:', err));
         });
         
-        // Validación de fecha (no permitir fechas pasadas)
+        // VALIDACIONES
         document.getElementById('id_fecha').min = new Date().toISOString().split('T')[0];
+        
+        // Validar que se hayan seleccionado región y ciudad
+        document.getElementById('eventoForm').addEventListener('submit', function(e) {
+            const region = document.getElementById('id_region').value;
+            const ciudad = document.getElementById('id_ciudad').value;
+            
+            if (!region || !ciudad) {
+                e.preventDefault();
+                alert('⚠️ Por favor selecciona una región y escribe el nombre de la ciudad.');
+                return false;
+            }
+            
+            // Verificar que haya al menos una categoría seleccionada
+            const categorias = document.querySelectorAll('input[name="categorias"]:checked');
+            if (categorias.length === 0) {
+                e.preventDefault();
+                alert('⚠️ Por favor selecciona al menos una categoría para tu evento.');
+                return false;
+            }
+        });
+
+        // CAMBIAR CENTRO DEL MAPA SEGÚN REGIÓN SELECCIONADA
+        document.getElementById('id_region').addEventListener('change', function() {
+            const coordenadas = {
+                'valparaiso': [-33.0472, -71.6127],
+                'metropolitana': [-33.4489, -70.6693],
+                'biobio': [-36.8270, -73.0498],
+                'araucania': [-38.9489, -72.3310],
+                'los_lagos': [-41.4717, -72.9365],
+                'maule': [-35.4264, -71.6554],
+                'coquimbo': [-29.9533, -71.3395],
+                'antofagasta': [-23.6509, -70.3975],
+                'tarapaca': [-20.2130, -70.1522],
+                'atacama': [-27.3668, -70.3315],
+                'ohiggins': [-34.1751, -70.7407],
+                'nuble': [-36.6064, -72.1034],
+                'los_rios': [-39.8142, -73.2459],
+                'aysen': [-45.5752, -72.0662],
+                'magallanes': [-53.1638, -70.9171],
+                'arica': [-18.4746, -70.2979]
+            };
+            
+            const region = this.value;
+            if (coordenadas[region]) {
+                map.setView(coordenadas[region], 11);
+            }
+        });
     </script>
 </body>
 </html>

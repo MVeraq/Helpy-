@@ -4,272 +4,560 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil de {{ usuario_perfil.username }} - Helpy</title>
+
     <style>
+        /* ------------ RESET ------------ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+            background: #f0f2f5;
+            color: #2b2b2b;
             line-height: 1.6;
-            background-color: #f4f4f4;
         }
-        
+
+        /* ------------ HEADER ------------ */
         header {
-            background: #333;
-            color: #fff;
-            padding: 20px;
-            margin-bottom: 30px;
+            background: #2f6f63;
+            color: white;
+            padding: 18px 30px;
+            border-radius: 0 0 18px 18px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        
+
         header h1 {
+            font-size: 26px;
             margin-bottom: 10px;
+            font-weight: 600;
         }
-        
+
         nav ul {
             list-style: none;
             display: flex;
-            gap: 20px;
+            gap: 25px;
         }
-        
+
         nav a {
-            color: #fff;
+            color: #e6fffa;
+            font-weight: 500;
             text-decoration: none;
+            transition: 0.2s;
         }
         
         nav a:hover {
-            text-decoration: underline;
+            color: #b2f7e7;
         }
-        
+
+        /* ------------ MAIN ------------ */
         main {
-            max-width: 900px;
-            margin: 0 auto;
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 20px;
         }
-        
-        .perfil-card {
+
+        /* ------------ PERFIL HEADER ------------ */
+        .perfil-header {
             background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-            text-align: center;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
         }
-        
-        .perfil-foto {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto 20px;
-            display: block;
-            border: 4px solid #28a745;
+
+        .perfil-portada {
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(135deg, #2f6f63 0%, #3d8575 100%);
+            position: relative;
         }
-        
-        .perfil-foto-placeholder {
-            width: 150px;
-            height: 150px;
+
+        .perfil-info-principal {
+            padding: 0 30px;
+            position: relative;
+        }
+
+        .perfil-foto-container {
+            position: absolute;
+            bottom: 20px;
+            left: 30px;
+        }
+
+        .perfil-foto, .perfil-foto-placeholder {
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            background: #6c757d;
-            color: white;
+            border: 5px solid white;
+            background: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 60px;
-            margin: 0 auto 20px;
         }
-        
-        .perfil-card h2 {
-            color: #333;
+
+        .perfil-foto {
+            object-fit: cover;
+        }
+
+        .perfil-foto-placeholder {
+            background: linear-gradient(135deg, #5a9386 0%, #2f6f63 100%);
+            color: white;
+            font-size: 70px;
+            font-weight: bold;
+        }
+
+        .perfil-nombre-section {
+            padding: 20px 30px 20px 230px;
+            min-height: 100px;
+        }
+
+        .perfil-nombre-section h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #050505;
+        }
+
+        .perfil-username {
+            color: #65676b;
+            font-size: 15px;
             margin-bottom: 10px;
         }
-        
-        .perfil-info {
-            margin: 15px 0;
-            color: #666;
+
+        .perfil-tabs {
+            border-top: 1px solid #e4e6eb;
+            padding: 0 30px;
+            display: flex;
+            gap: 10px;
         }
-        
-        .eventos-section {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+        .tab-item {
+            padding: 16px 20px;
+            color: #65676b;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        
-        .eventos-section h3 {
-            color: #333;
-            margin-bottom: 20px;
-            border-left: 4px solid #28a745;
-            padding-left: 15px;
+
+        .tab-item:hover {
+            background: #f2f3f5;
+            border-radius: 8px 8px 0 0;
         }
-        
-        .eventos-grid {
+
+        .tab-item.active {
+            color: #2f6f63;
+            border-bottom-color: #2f6f63;
+        }
+
+        /* ------------ LAYOUT PRINCIPAL ------------ */
+        .perfil-content {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: 360px 1fr;
             gap: 20px;
         }
-        
+
+        /* ------------ SIDEBAR ------------ */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #050505;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            color: #050505;
+            font-size: 15px;
+        }
+
+        .info-item-icon {
+            font-size: 20px;
+            min-width: 20px;
+        }
+
+        .info-item-content strong {
+            color: #65676b;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* ------------ CONTENIDO PRINCIPAL ------------ */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .eventos-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .eventos-section-header {
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e4e6eb;
+            margin-bottom: 20px;
+        }
+
+        .eventos-section-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #050505;
+        }
+
+        .eventos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        /* ------------ EVENTO CARD ------------ */
         .evento-card {
-            background: #f8f9fa;
+            background: white;
+            border: 1px solid #e4e6eb;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .evento-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .evento-imagen {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .evento-imagen-placeholder {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(135deg, #2f6f63 0%, #3d8575 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            color: white;
+        }
+
+        .evento-body {
             padding: 15px;
-            border-radius: 4px;
-            border-left: 4px solid #28a745;
         }
-        
+
+        .evento-categorias {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .categoria-chip {
+            padding: 4px 10px;
+            background: #2f6f63;
+            color: white;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
         .evento-card h4 {
-            color: #333;
-            margin-bottom: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #050505;
+            margin-bottom: 8px;
+            line-height: 1.3;
         }
-        
+
         .evento-card p {
-            color: #666;
-            font-size: 14px;
+            color: #65676b;
+            font-size: 13px;
             margin: 5px 0;
+            line-height: 1.4;
         }
-        
+
         .evento-card a {
-            color: #007bff;
-            text-decoration: none;
-            font-size: 14px;
             display: inline-block;
             margin-top: 10px;
+            color: #2f6f63;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
         }
-        
+
         .evento-card a:hover {
             text-decoration: underline;
         }
-        
+
         .no-eventos {
             text-align: center;
-            color: #666;
-            padding: 30px;
+            padding: 40px;
+            color: #65676b;
+            font-size: 15px;
+        }
+
+        /* ------------ BADGE ------------ */
+        .tipo-cuenta-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #e7f3f0;
+            color: #2f6f63;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        /* ------------ RESPONSIVE ------------ */
+        @media (max-width: 968px) {
+            .perfil-content {
+                grid-template-columns: 1fr;
+            }
+
+            .perfil-nombre-section {
+                padding: 20px 30px;
+            }
+
+            .perfil-foto-container {
+                position: static;
+                display: flex;
+                justify-content: center;
+                padding: 20px 0 0;
+                transform: translateY(-50%);
+            }
+
+            .perfil-portada {
+                height: 250px;
+            }
+
+            .perfil-foto, .perfil-foto-placeholder {
+                width: 160px;
+                height: 160px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .eventos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .perfil-tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
         }
     </style>
 </head>
+
 <body>
-    <header>
-        <h1>Perfil de Usuario</h1>
-        <nav>
-            <ul>
-                <li><a href="/">Inicio</a></li>
-                <li><a href="{% url 'lista_eventos' %}">Ver Eventos</a></li>
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'perfil' %}">Mi Perfil</a></li>
-                {% else %}
-                    <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-    </header>
-    
-    <main>
-        <div class="perfil-card">
-            {% if perfil.foto %}
-                <img src="{{ perfil.foto.url }}" alt="Foto de {{ usuario_perfil.username }}" class="perfil-foto">
+
+<header>
+    <h1>Perfil de Usuario</h1>
+    <nav>
+        <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="{% url 'lista_eventos' %}">Ver Eventos</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'perfil' %}">Mi Perfil</a></li>
             {% else %}
-                <div class="perfil-foto-placeholder">
-                    {{ usuario_perfil.username|slice:":1"|upper }}
-                </div>
+                <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
             {% endif %}
-            
+        </ul>
+    </nav>
+</header>
+
+<main>
+
+    <!-- PERFIL HEADER -->
+    <div class="perfil-header">
+        <!-- Portada -->
+        <div class="perfil-portada">
+            <div class="perfil-foto-container">
+                {% if perfil.foto %}
+                    <img src="{{ perfil.foto.url }}" class="perfil-foto">
+                {% else %}
+                    <div class="perfil-foto-placeholder">
+                        {{ usuario_perfil.username|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Nombre y usuario -->
+        <div class="perfil-nombre-section">
             <h2>{{ usuario_perfil.get_full_name|default:usuario_perfil.username }}</h2>
-            <p style="color: #666; font-size: 18px;">@{{ usuario_perfil.username }}</p>
-            <p style="color: #28a745; font-weight: bold; font-size: 16px; margin-top: 10px;">
+            <p class="perfil-username">@{{ usuario_perfil.username }}</p>
+            
+            <span class="tipo-cuenta-badge">
                 {% if perfil.tipo_cuenta == 'organizacion' %}
                     🏢 Organización
                 {% else %}
                     👤 Individuo
                 {% endif %}
-            </p>            
-            {% if perfil.biografia %}
-            <div class="perfil-info">
-                <strong>📝 Biografía:</strong>
-                <p>{{ perfil.biografia }}</p>
-            </div>
-            {% endif %}
-            
-            <div class="perfil-info">
-                <strong>📧 Email:</strong> {{ usuario_perfil.email }}
-            </div>
-            
-            {% if perfil.numero_celular %}
-            <div class="perfil-info">
-                <strong>📱 Teléfono:</strong> {{ perfil.numero_celular }}
-            </div>
-            {% endif %}
-            
-            <div class="perfil-info">
-                <strong>📅 Miembro desde:</strong> {{ usuario_perfil.date_joined|date:"F Y" }}
-            </div>
+            </span>
         </div>
+
+        <!-- Tabs -->
+        <div class="perfil-tabs">
+            <div class="tab-item active">Eventos</div>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="perfil-content">
         
-        <div class="eventos-section">
-            <h3> Eventos creados por {{ usuario_perfil.username }}</h3>
+        <!-- SIDEBAR -->
+        <div class="sidebar">
             
-            {% if eventos_creados %}
-            <div class="eventos-grid">
-                {% for evento in eventos_creados %}
-                <div class="evento-card">
-                    <!-- AGREGAR IMAGEN -->
-                    {% if evento.imagen %}
-                    <img src="{{ evento.imagen.url }}" 
-                        alt="{{ evento.nombre }}" 
-                        style="width: 100%; height: 150px; object-fit: cover; border-radius: 10px 10px 0 0;">
-                    {% else %}
-                    <div style="width: 100%; height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 40px; color: white; border-radius: 10px 10px 0 0;">
-                        {{ evento.categorias.first.icono|default:"📅" }}
-                    </div>
-                    {% endif %}
-                    
-                    <div style="padding: 15px;">
-                        <!-- Agregar categorías -->
-                        <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px;">
-                            {% for categoria in evento.categorias.all|slice:":2" %}
-                            <span style="padding: 3px 8px; background: {{ categoria.color }}; color: white; border-radius: 12px; font-size: 10px; font-weight: bold;">
-                                {{ categoria.icono }}
-                            </span>
-                            {% endfor %}
-                        </div>
-                        
-                        <h4>{{ evento.nombre }}</h4>
-                        <p><strong>📅</strong> {{ evento.fecha|date:"d/m/Y" }} a las {{ evento.hora|time:"H:i" }}</p>
-                        <p><strong>📍</strong> {{ evento.ubicacion|truncatewords:8 }}</p>
-                        <p>{{ evento.descripcion|truncatewords:15 }}</p>
-                        <a href="{% url 'detalle_evento' evento.id %}">Ver detalles →</a>
+            <!-- Información -->
+            <div class="info-card">
+                <h3>Información</h3>
+                
+                <div class="info-item">
+                    <span class="info-item-icon">📧</span>
+                    <div class="info-item-content">
+                        <strong>Email</strong>
+                        {{ usuario_perfil.email }}
                     </div>
                 </div>
-                {% endfor %}
-            </div>
-            {% else %}
-            <div class="no-eventos">
-                <p>Este usuario aún no ha creado ningún evento.</p>
-            </div>
-            {% endif %}
-            
-        <div class="eventos-section">
-            <h3> Inscripciones de {{ usuario_perfil.username }}</h3>
-            
-            {% if eventos_inscritos %}
-            <div class="eventos-grid">
-                {% for evento in eventos_inscritos %}
-                <div class="evento-card">
-                    <h4>{{ evento.nombre }}</h4>
-                    <p><strong>📅</strong> {{ evento.fecha|date:"d/m/Y" }} a las {{ evento.hora|time:"H:i" }}</p>
-                    <p><strong>📍</strong> {{ evento.ubicacion|truncatewords:8 }}</p>
-                    <p>{{ evento.descripcion|truncatewords:15 }}</p>
-                    <a href="{% url 'detalle_evento' evento.id %}">Ver detalles →</a>
-                </div>
-                {% endfor %}
-            </div>
-            {% else %}
-            <div class="no-eventos">
-                <p>Este usuario aún no se ha inscrito en algún evento.</p>
-            </div>
-            {% endif %}
 
+                {% if perfil.numero_celular %}
+                <div class="info-item">
+                    <span class="info-item-icon">📱</span>
+                    <div class="info-item-content">
+                        <strong>Teléfono</strong>
+                        {{ perfil.numero_celular }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="info-item">
+                    <span class="info-item-icon">📅</span>
+                    <div class="info-item-content">
+                        <strong>Miembro desde</strong>
+                        {{ usuario_perfil.date_joined|date:"F Y" }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Biografía -->
+            {% if perfil.biografia %}
+            <div class="info-card">
+                <h3>Acerca de</h3>
+                <p style="color: #050505; font-size: 15px; line-height: 1.5;">
+                    {{ perfil.biografia }}
+                </p>
+            </div>
+            {% endif %}
 
         </div>
-    </main>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            
+            <!-- EVENTOS CREADOS -->
+            <div class="eventos-section">
+                <div class="eventos-section-header">
+                    <h3>Eventos creados</h3>
+                </div>
+
+                {% if eventos_creados %}
+                <div class="eventos-grid">
+                    {% for evento in eventos_creados %}
+                    <div class="evento-card" onclick="location.href='{% url 'detalle_evento' evento.id %}'">
+                        {% if evento.imagen %}
+                            <img src="{{ evento.imagen.url }}" class="evento-imagen">
+                        {% else %}
+                            <div class="evento-imagen-placeholder">
+                                {{ evento.categorias.first.icono|default:"📅" }}
+                            </div>
+                        {% endif %}
+
+                        <div class="evento-body">
+                            <div class="evento-categorias">
+                                {% for categoria in evento.categorias.all|slice:":2" %}
+                                    <span class="categoria-chip" style="background:{{ categoria.color }};">
+                                        {{ categoria.icono }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+                            <h4>{{ evento.nombre }}</h4>
+                            <p><strong>📅</strong> {{ evento.fecha|date:"d/m/Y" }} a las {{ evento.hora|time:"H:i" }}</p>
+                            <p><strong>📍</strong> {{ evento.ubicacion|truncatewords:8 }}</p>
+                            <p style="margin-top: 8px;">{{ evento.descripcion|truncatewords:12 }}</p>
+                            <a href="{% url 'detalle_evento' evento.id %}" onclick="event.stopPropagation()">Ver más →</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="no-eventos">
+                    Este usuario aún no ha creado eventos.
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- EVENTOS INSCRITOS -->
+            <div class="eventos-section">
+                <div class="eventos-section-header">
+                    <h3>Eventos inscritos</h3>
+                </div>
+
+                {% if eventos_inscritos %}
+                <div class="eventos-grid">
+                    {% for evento in eventos_inscritos %}
+                    <div class="evento-card" onclick="location.href='{% url 'detalle_evento' evento.id %}'">
+                        <div class="evento-body">
+                            <h4>{{ evento.nombre }}</h4>
+                            <p><strong>📅</strong> {{ evento.fecha|date:"d/m/Y" }} a las {{ evento.hora|time:"H:i" }}</p>
+                            <p><strong>📍</strong> {{ evento.ubicacion|truncatewords:8 }}</p>
+                            <p style="margin-top: 8px;">{{ evento.descripcion|truncatewords:12 }}</p>
+                            <a href="{% url 'detalle_evento' evento.id %}" onclick="event.stopPropagation()">Ver más →</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="no-eventos">
+                    Este usuario aún no se ha inscrito en eventos.
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
 </body>
 </html>
