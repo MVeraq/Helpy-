@@ -97,3 +97,9 @@ class Inscripcion(models.Model):
     
     def __str__(self):
         return f"{self.usuario.username} → {self.evento.nombre}"
+    
+
+
+from django.core.management.base import BaseCommand
+from Humanet.models import Categoria
+
